@@ -51,6 +51,20 @@ const createQueryReadPage = (typeName) => {
     }`;
 };
 
+const attachIdIfDoesNotExist = (a) => {
+  if (!("id" in a)) {
+    return { ...a, id: a._id.$oid };
+  }
+  return a;
+};
+
+const mapPage = (f, a) => {
+  return {
+    ...a,
+    edges: a.edges.map((b) => ({ ...b, node: f(b.node) })),
+  };
+};
+
 export const createLoader = async ({ apolloClient }) => {
   const readPage = async (resource, { filter, sort, pageOptions }) => {
     const result = await apolloClient.query({
@@ -61,7 +75,10 @@ export const createLoader = async ({ apolloClient }) => {
         pageOptions,
       },
     });
-    return result.data[createEndponitNameReadPage(resource)];
+    return mapPage(
+      attachIdIfDoesNotExist,
+      result.data[createEndponitNameReadPage(resource)]
+    );
   };
 
   const readOne = async (resource, id) => {
@@ -71,7 +88,9 @@ export const createLoader = async ({ apolloClient }) => {
         filter: { _id: { $oid: id } },
       },
     });
-    return result.data[createEndponitNameReadOne(resource)];
+    return attachIdIfDoesNotExist(
+      result.data[createEndponitNameReadOne(resource)]
+    );
   };
 
   const readManyOrderedId = async (resource, ids) => {
@@ -96,7 +115,7 @@ export const createLoader = async ({ apolloClient }) => {
       }
       return doc;
     });
-    return objs;
+    return objs.map(attachIdIfDoesNotExist);
   };
 
   return {
