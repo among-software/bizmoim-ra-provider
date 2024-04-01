@@ -13,11 +13,15 @@ module.exports = {
   output: {
     filename: "main.js",
     path: path.resolve(__dirname, "dist"),
+    library: {
+      type: "umd",
+    },
   },
   externals: {
     graphql: "graphql",
-    "@apollo/client": "apolloClient",
+    "@apollo/client": "@apollo/client",
   },
+
   // experiments: {
   //   outputModule: true,
   // },
