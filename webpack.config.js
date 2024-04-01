@@ -14,9 +14,12 @@ module.exports = {
     filename: "main.js",
     path: path.resolve(__dirname, "dist"),
   },
-  externals: { graphql: "graphql", "@apollo/client": "@apollo/client" },
-  experiments: {
-    outputModule: true,
+  externals: {
+    graphql: "graphql",
+    "@apollo/client": "apolloClient",
   },
-  externalsType: "module",
+  // experiments: {
+  //   outputModule: true,
+  // },
+  // externalsType: "module",
 };
