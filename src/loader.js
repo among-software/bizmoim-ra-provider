@@ -1,6 +1,6 @@
 const Lodash = require("lodash");
 
-const fragments = require("./src/fragments.graphql");
+const fragments = require("./fragments.graphql");
 
 const createQueryReadOne = (typeName) => {
   return (
