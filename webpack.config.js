@@ -16,6 +16,7 @@ module.exports = {
     library: {
       type: "umd",
     },
+    globalObject: "globalThis",
   },
   externals: {
     graphql: "graphql",
