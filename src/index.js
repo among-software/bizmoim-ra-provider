@@ -34,7 +34,7 @@ const getPageOptions = (params) => {
 
 const getSort = (params) => {
   const sort = {
-    [params.pagination.sort.field]: toMongoDirec(params.pagination.sort.order),
+    [params.sort.field]: toMongoDirec(params.sort.order),
   };
   return sort;
 };
@@ -98,3 +98,5 @@ const createDataProvider = async ({ apolloClient }) => {
 };
 
 module.exports.createDataProvider = createDataProvider;
+module.exports.fragments = require("./fragments").fragments;
+module.exports.fragmentsMetadata = require("./fragments").fragmentsMetadata;

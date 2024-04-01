@@ -1,67 +1,705 @@
-fragment f_Popup on Popup  {_id createdAt name imagePc imageMobile url adminDescription} 
-fragment f_CoursePackageCategory on CoursePackageCategory  {_id createdAt name adminDescription} 
-fragment f_AdminScheduleKind on AdminScheduleKind  {_id createdAt name adminDescription} 
-fragment f_FreeBoardCategory on FreeBoardCategory  {_id createdAt name boards {_id} adminDescription} 
-fragment f_Banner on Banner  {_id createdAt name imagePc imageMobile url adminDescription} 
-fragment f_Badge on Badge  {_id createdAt name color adminDescription} 
-fragment f_CoachScheduleKind on CoachScheduleKind  {_id createdAt name adminDescription} 
-fragment f_FaqCategory on FaqCategory  {_id createdAt name items {_id} adminDescription} 
-fragment f_ReviewBoardCategory on ReviewBoardCategory  {_id createdAt name boards {_id} adminDescription} 
-fragment f_UserGroup on UserGroup  {_id createdAt name} 
-fragment f_InquiryKind on InquiryKind  {_id createdAt name adminDescription} 
-fragment f_AssignmentBoardCategory on AssignmentBoardCategory  {_id createdAt name boards {_id} adminDescription} 
-fragment f_RegularBoardCategory on RegularBoardCategory  {_id createdAt name boards {_id} adminDescription} 
-fragment f_UserBadgeRel on UserBadgeRel  {_id createdAt user {_id} badge {_id}} 
-fragment f_SpecialProduct on SpecialProduct  {_id createdAt name priceSales adminDescription} 
-fragment f_CourseTag on CourseTag  {_id createdAt kind {_id} name adminDescription} 
-fragment f_Announcement on Announcement  {_id createdAt name content adminDescription} 
-fragment f_Faq on Faq  {_id createdAt question answer adminDescription} 
-fragment f_UserTogetherFreeVideoRel on UserTogetherFreeVideoRel  {_id createdAt user {_id} togetherFreeVideo {_id} progress lastWatchedAt} 
-fragment f_ReviewBoardComment on ReviewBoardComment  {_id adminDescription content replyOf {_id} createdAt author {_id} post {_id}} 
-fragment f_RegularBoardPost on RegularBoardPost  {_id createdAt name content isImportant adminDescription} 
-fragment f_TogetherFreeVideo on TogetherFreeVideo  {_id createdAt name content adminDescription} 
-fragment f_LectureApplication on LectureApplication  {_id createdAt lecture {_id} user {_id} adminChecked adminDescription} 
-fragment f_AssignmentBoardMember on AssignmentBoardMember  {_id createdAt user {_id} board {_id}} 
-fragment f_SpecialProductPurchase on SpecialProductPurchase  {_id createdAt customer {_id} amountTotal amountPaid adminDescription} 
-fragment f_Inquiry on Inquiry  {_id adminDescription typeOfBusiness phone content name createdAt adminChecked careerPeriod author {_id} salesMethod} 
-fragment f_SpecialProductPurchaseLink on SpecialProductPurchaseLink  {_id createdAt specialProduct {_id} specialProductPurchase {_id} ticketCondition {method price installmentMonths} ticket {_id} adminDescription} 
-fragment f_Lesson on Lesson  {_id createdAt course {_id} name content assignment assignmentBoard {_id} adminDescription} 
-fragment f_FreeBoardComment on FreeBoardComment  {_id adminDescription content replyOf {_id} createdAt author {_id} post {_id}} 
-fragment f_AssignmentBoardComment on AssignmentBoardComment  {_id adminDescription content replyOf {_id} createdAt author {_id} post {_id}} 
-fragment f_RegularBoard on RegularBoard  {_id createdAt category {_id} name content adminDescription requiredBadges {_id}} 
-fragment f_CoursePackage on CoursePackage  {description category {_id} _id adminDescription name courses {_id} createdAt brief priceSales priceRegular} 
-fragment f_Report on Report  {_id createdAt author {_id} ... on ReportTargetCourseReview {courseReview {_id} kind}
-... on ReportTargetFreeBoardPost {post {_id} kind}
-... on ReportTargetFreeBoardComment {comment {_id} kind}
-... on ReportTargetRegularBoardPost {post {_id} kind}
-... on ReportTargetRegularBoardComment {comment {_id} kind}
-... on ReportTargetReviewBoardPost {post {_id} kind}
-... on ReportTargetReviewBoardComment {comment {_id} kind}
-... on ReportTargetAssignmentBoardPost {post {_id} kind}
-... on ReportTargetAssignmentBoardComment {comment {_id} kind} content adminDescription} 
-fragment f_CourseTagRel on CourseTagRel  {_id createdAt course {_id} tag {_id}} 
-fragment f_CourseReview on CourseReview  {_id createdAt author {_id} course {_id} content adminChecked adminDescription} 
-fragment f_UserLessonRel on UserLessonRel  {_id createdAt user {_id} lesson {_id} progress lastWatchedAt} 
-fragment f_CourseKind on CourseKind  {_id createdAt tags {_id} categories {_id}} 
-fragment f_CoachSchedule on CoachSchedule  {_id createdAt owner {_id} customer {_id} period content adminDescription} 
-fragment f_AdminSchedule on AdminSchedule  {_id createdAt period content adminDescription} 
-fragment f_MeetingRecord on MeetingRecord  {_id createdAt author {_id} customer {_id} startsAt content adminDescription} 
-fragment f_ReviewBoard on ReviewBoard  {_id createdAt category {_id} name content adminDescription requiredBadges {_id}} 
-fragment f_ReviewBoardPost on ReviewBoardPost  {_id createdAt name content isImportant adminDescription} 
-fragment f_TogetherFreeVideoOwnership on TogetherFreeVideoOwnership  {_id createdAt user {_id} togetherFreeVideo {_id} expiresAt} 
-fragment f_CourseCategory on CourseCategory  {_id createdAt kind {_id} name adminDescription} 
-fragment f_Ticket on Ticket  {tossPaymentKey _id adminDescription tossPaymentValidationError createdAt ... on TicketReasonCourse {user {_id} course {_id} kind}
-... on TicketReasonCoursePackage {user {_id} coursePackage {_id} kind}
-... on TicketReasonLecture {user {_id} lecture {_id} kind}
-... on TicketReasonSpecialProduct {user {_id} specialProduct {_id} specialProductPurchase {_id} specialProductPurchaseLink {_id} kind} status condition {method price installmentMonths} user {_id}} 
-fragment f_ReferrerLink on ReferrerLink  {_id createdAt owner {_id} name url adminDescription} 
-fragment f_User on User  {_id adminDescription email referrerCode typeOfBusiness group {_id} phone coachExpiresAt name nickname createdAt coach {_id} studentId loginDenied togetherFreeVideoTicketCount isCoach coachChecked} 
-fragment f_AssignmentBoardPost on AssignmentBoardPost  {_id createdAt name content isImportant adminDescription} 
-fragment f_FreeBoardPost on FreeBoardPost  {_id createdAt name content isImportant adminDescription} 
-fragment f_Course on Course  {description tags {_id} _id adminDescription name attachments orientation createdAt categories {_id} brief image priceSales lessons {_id} priceRegular} 
-fragment f_RegularBoardComment on RegularBoardComment  {_id adminDescription content replyOf {_id} createdAt author {_id} post {_id}} 
-fragment f_CourseOwnership on CourseOwnership  {_id createdAt user {_id} course {_id} expiresAt adminDescription} 
-fragment f_FreeVideo on FreeVideo  {_id createdAt name content adminDescription} 
-fragment f_FreeBoard on FreeBoard  {_id createdAt category {_id} name content adminDescription requiredBadges {_id}} 
-fragment f_Lecture on Lecture  {description _id adminDescription capacity name createdAt brief priceSales period applicationEndsAt priceRegular} 
-fragment f_AssignmentBoard on AssignmentBoard  {_id createdAt category {_id} name content adminDescription} 
+fragment f_Popup on Popup {
+  _id
+  createdAt
+  name
+  imagePc
+  imageMobile
+  url
+  adminDescription
+}
+fragment f_CoursePackageCategory on CoursePackageCategory {
+  _id
+  createdAt
+  name
+  adminDescription
+}
+fragment f_AdminScheduleKind on AdminScheduleKind {
+  _id
+  createdAt
+  name
+  adminDescription
+}
+fragment f_FreeBoardCategory on FreeBoardCategory {
+  _id
+  createdAt
+  name
+  boards {
+    _id
+  }
+  adminDescription
+}
+fragment f_Banner on Banner {
+  _id
+  createdAt
+  name
+  imagePc
+  imageMobile
+  url
+  adminDescription
+}
+fragment f_Badge on Badge {
+  _id
+  createdAt
+  name
+  color
+  adminDescription
+}
+fragment f_CoachScheduleKind on CoachScheduleKind {
+  _id
+  createdAt
+  name
+  adminDescription
+}
+fragment f_FaqCategory on FaqCategory {
+  _id
+  createdAt
+  name
+  items {
+    _id
+  }
+  adminDescription
+}
+fragment f_ReviewBoardCategory on ReviewBoardCategory {
+  _id
+  createdAt
+  name
+  boards {
+    _id
+  }
+  adminDescription
+}
+fragment f_UserGroup on UserGroup {
+  _id
+  createdAt
+  name
+}
+fragment f_InquiryKind on InquiryKind {
+  _id
+  createdAt
+  name
+  adminDescription
+}
+fragment f_AssignmentBoardCategory on AssignmentBoardCategory {
+  _id
+  createdAt
+  name
+  boards {
+    _id
+  }
+  adminDescription
+}
+fragment f_RegularBoardCategory on RegularBoardCategory {
+  _id
+  createdAt
+  name
+  boards {
+    _id
+  }
+  adminDescription
+}
+fragment f_UserBadgeRel on UserBadgeRel {
+  _id
+  createdAt
+  user {
+    _id
+  }
+  badge {
+    _id
+  }
+}
+fragment f_SpecialProduct on SpecialProduct {
+  _id
+  createdAt
+  name
+  priceSales
+  adminDescription
+}
+fragment f_CourseTag on CourseTag {
+  _id
+  createdAt
+  kind {
+    _id
+  }
+  name
+  adminDescription
+}
+fragment f_Announcement on Announcement {
+  _id
+  createdAt
+  name
+  content
+  adminDescription
+}
+fragment f_Faq on Faq {
+  _id
+  createdAt
+  question
+  answer
+  adminDescription
+}
+fragment f_UserTogetherFreeVideoRel on UserTogetherFreeVideoRel {
+  _id
+  createdAt
+  user {
+    _id
+  }
+  togetherFreeVideo {
+    _id
+  }
+  progress
+  lastWatchedAt
+}
+fragment f_ReviewBoardComment on ReviewBoardComment {
+  _id
+  adminDescription
+  content
+  replyOf {
+    _id
+  }
+  createdAt
+  author {
+    _id
+  }
+  post {
+    _id
+  }
+}
+fragment f_RegularBoardPost on RegularBoardPost {
+  _id
+  createdAt
+  name
+  content
+  isImportant
+  adminDescription
+}
+fragment f_TogetherFreeVideo on TogetherFreeVideo {
+  _id
+  createdAt
+  name
+  content
+  adminDescription
+}
+fragment f_LectureApplication on LectureApplication {
+  _id
+  createdAt
+  lecture {
+    _id
+  }
+  user {
+    _id
+  }
+  adminChecked
+  adminDescription
+}
+fragment f_AssignmentBoardMember on AssignmentBoardMember {
+  _id
+  createdAt
+  user {
+    _id
+  }
+  board {
+    _id
+  }
+}
+fragment f_SpecialProductPurchase on SpecialProductPurchase {
+  _id
+  createdAt
+  customer {
+    _id
+  }
+  amountTotal
+  amountPaid
+  adminDescription
+}
+fragment f_Inquiry on Inquiry {
+  _id
+  adminDescription
+  typeOfBusiness
+  phone
+  content
+  name
+  createdAt
+  adminChecked
+  careerPeriod
+  author {
+    _id
+  }
+  salesMethod
+}
+fragment f_SpecialProductPurchaseLink on SpecialProductPurchaseLink {
+  _id
+  createdAt
+  specialProduct {
+    _id
+  }
+  specialProductPurchase {
+    _id
+  }
+  ticketCondition {
+    method
+    price
+    installmentMonths
+  }
+  ticket {
+    _id
+  }
+  adminDescription
+}
+fragment f_Lesson on Lesson {
+  _id
+  createdAt
+  course {
+    _id
+  }
+  name
+  content
+  assignment
+  assignmentBoard {
+    _id
+  }
+  adminDescription
+}
+fragment f_FreeBoardComment on FreeBoardComment {
+  _id
+  adminDescription
+  content
+  replyOf {
+    _id
+  }
+  createdAt
+  author {
+    _id
+  }
+  post {
+    _id
+  }
+}
+fragment f_AssignmentBoardComment on AssignmentBoardComment {
+  _id
+  adminDescription
+  content
+  replyOf {
+    _id
+  }
+  createdAt
+  author {
+    _id
+  }
+  post {
+    _id
+  }
+}
+fragment f_RegularBoard on RegularBoard {
+  _id
+  createdAt
+  category {
+    _id
+  }
+  name
+  content
+  adminDescription
+  requiredBadges {
+    _id
+  }
+}
+fragment f_CoursePackage on CoursePackage {
+  description
+  category {
+    _id
+  }
+  _id
+  adminDescription
+  name
+  courses {
+    _id
+  }
+  createdAt
+  brief
+  priceSales
+  priceRegular
+}
+fragment f_Report on Report {
+  _id
+  createdAt
+  author {
+    _id
+  }
+  target {
+    ... on ReportTargetCourseReview {
+      courseReview {
+        _id
+      }
+      kind
+    }
+    ... on ReportTargetFreeBoardPost {
+      post {
+        _id
+      }
+      kind
+    }
+    ... on ReportTargetFreeBoardComment {
+      comment {
+        _id
+      }
+      kind
+    }
+    ... on ReportTargetRegularBoardPost {
+      post {
+        _id
+      }
+      kind
+    }
+    ... on ReportTargetRegularBoardComment {
+      comment {
+        _id
+      }
+      kind
+    }
+    ... on ReportTargetReviewBoardPost {
+      post {
+        _id
+      }
+      kind
+    }
+    ... on ReportTargetReviewBoardComment {
+      comment {
+        _id
+      }
+      kind
+    }
+    ... on ReportTargetAssignmentBoardPost {
+      post {
+        _id
+      }
+      kind
+    }
+    ... on ReportTargetAssignmentBoardComment {
+      comment {
+        _id
+      }
+      kind
+    }
+  }
+  content
+  adminDescription
+}
+fragment f_CourseTagRel on CourseTagRel {
+  _id
+  createdAt
+  course {
+    _id
+  }
+  tag {
+    _id
+  }
+}
+fragment f_CourseReview on CourseReview {
+  _id
+  createdAt
+  author {
+    _id
+  }
+  course {
+    _id
+  }
+  content
+  adminChecked
+  adminDescription
+}
+fragment f_UserLessonRel on UserLessonRel {
+  _id
+  createdAt
+  user {
+    _id
+  }
+  lesson {
+    _id
+  }
+  progress
+  lastWatchedAt
+}
+fragment f_CourseKind on CourseKind {
+  _id
+  createdAt
+  tags {
+    _id
+  }
+  categories {
+    _id
+  }
+}
+fragment f_CoachSchedule on CoachSchedule {
+  _id
+  createdAt
+  owner {
+    _id
+  }
+  customer {
+    _id
+  }
+  period
+  content
+  adminDescription
+}
+fragment f_AdminSchedule on AdminSchedule {
+  _id
+  createdAt
+  period
+  content
+  adminDescription
+}
+fragment f_MeetingRecord on MeetingRecord {
+  _id
+  createdAt
+  author {
+    _id
+  }
+  customer {
+    _id
+  }
+  startsAt
+  content
+  adminDescription
+}
+fragment f_ReviewBoard on ReviewBoard {
+  _id
+  createdAt
+  category {
+    _id
+  }
+  name
+  content
+  adminDescription
+  requiredBadges {
+    _id
+  }
+}
+fragment f_ReviewBoardPost on ReviewBoardPost {
+  _id
+  createdAt
+  name
+  content
+  isImportant
+  adminDescription
+}
+fragment f_TogetherFreeVideoOwnership on TogetherFreeVideoOwnership {
+  _id
+  createdAt
+  user {
+    _id
+  }
+  togetherFreeVideo {
+    _id
+  }
+  expiresAt
+}
+fragment f_CourseCategory on CourseCategory {
+  _id
+  createdAt
+  kind {
+    _id
+  }
+  name
+  adminDescription
+}
+fragment f_Ticket on Ticket {
+  tossPaymentKey
+  _id
+  adminDescription
+  tossPaymentValidationError
+  createdAt
+  reason {
+    ... on TicketReasonCourse {
+      user {
+        _id
+      }
+      course {
+        _id
+      }
+      kind
+    }
+    ... on TicketReasonCoursePackage {
+      user {
+        _id
+      }
+      coursePackage {
+        _id
+      }
+      kind
+    }
+    ... on TicketReasonLecture {
+      user {
+        _id
+      }
+      lecture {
+        _id
+      }
+      kind
+    }
+    ... on TicketReasonSpecialProduct {
+      user {
+        _id
+      }
+      specialProduct {
+        _id
+      }
+      specialProductPurchase {
+        _id
+      }
+      specialProductPurchaseLink {
+        _id
+      }
+      kind
+    }
+  }
+  status
+  condition {
+    method
+    price
+    installmentMonths
+  }
+  user {
+    _id
+  }
+}
+fragment f_ReferrerLink on ReferrerLink {
+  _id
+  createdAt
+  owner {
+    _id
+  }
+  name
+  url
+  adminDescription
+}
+fragment f_User on User {
+  _id
+  adminDescription
+  email
+  referrerCode
+  typeOfBusiness
+  group {
+    _id
+  }
+  phone
+  coachExpiresAt
+  name
+  nickname
+  createdAt
+  coach {
+    _id
+  }
+  studentId
+  loginDenied
+  togetherFreeVideoTicketCount
+  isCoach
+  coachChecked
+}
+fragment f_AssignmentBoardPost on AssignmentBoardPost {
+  _id
+  createdAt
+  name
+  content
+  isImportant
+  adminDescription
+}
+fragment f_FreeBoardPost on FreeBoardPost {
+  _id
+  createdAt
+  name
+  content
+  isImportant
+  adminDescription
+}
+fragment f_Course on Course {
+  description
+  tags {
+    _id
+  }
+  _id
+  adminDescription
+  name
+  attachments
+  orientation
+  createdAt
+  categories {
+    _id
+  }
+  brief
+  image
+  priceSales
+  lessons {
+    _id
+  }
+  priceRegular
+}
+fragment f_RegularBoardComment on RegularBoardComment {
+  _id
+  adminDescription
+  content
+  replyOf {
+    _id
+  }
+  createdAt
+  author {
+    _id
+  }
+  post {
+    _id
+  }
+}
+fragment f_CourseOwnership on CourseOwnership {
+  _id
+  createdAt
+  user {
+    _id
+  }
+  course {
+    _id
+  }
+  expiresAt
+  adminDescription
+}
+fragment f_FreeVideo on FreeVideo {
+  _id
+  createdAt
+  name
+  content
+  adminDescription
+}
+fragment f_FreeBoard on FreeBoard {
+  _id
+  createdAt
+  category {
+    _id
+  }
+  name
+  content
+  adminDescription
+  requiredBadges {
+    _id
+  }
+}
+fragment f_Lecture on Lecture {
+  description
+  _id
+  adminDescription
+  capacity
+  name
+  createdAt
+  brief
+  priceSales
+  period
+  applicationEndsAt
+  priceRegular
+}
+fragment f_AssignmentBoard on AssignmentBoard {
+  _id
+  createdAt
+  category {
+    _id
+  }
+  name
+  content
+  adminDescription
+}

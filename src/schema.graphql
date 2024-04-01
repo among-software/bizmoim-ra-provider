@@ -6,677 +6,1380 @@ scalar Unknown
 scalar File
 scalar Period
 scalar Date
-enum ReportTargetKind{COURSE_REVIEW FREE_BOARD_POST FREE_BOARD_COMMENT REGULAR_BOARD_POST REGULAR_BOARD_COMMENT REVIEW_BOARD_POST REVIEW_BOARD_COMMENT ASSIGNMENT_BOARD_POST ASSIGNMENT_BOARD_COMMENT}
-enum TicketStatus{PENDING VALIDATING SUCCEED VALIDATION_FAILED}
-enum TicketReasonKind{COURSE COURSE_PACKAGE LECTURE SPECIAL_PRODUCT}
-enum TicketMethod{VIRTUAL_ACCOUNT CARD}
-type LectureApplication{_id: MId!
-createdAt: Date!
-lecture: Lecture!
-user: User
-adminChecked: Boolean!
-adminDescription: String!}
-type AssignmentBoardCategoryPage{edges: [AssignmentBoardCategoryEdge!]!
-count: Int!}
-type TogetherFreeVideoPage{edges: [TogetherFreeVideoEdge!]!
-count: Int!}
-type ReferrerLinkPage{edges: [ReferrerLinkEdge!]!
-count: Int!}
-type FreeVideoPage{edges: [FreeVideoEdge!]!
-count: Int!}
-type PopupEdge{node: Popup!}
-type AssignmentBoardMember{_id: MId!
-createdAt: Date!
-user: User!
-board: AssignmentBoard!}
-type SpecialProductEdge{node: SpecialProduct!}
-type ReportPage{edges: [ReportEdge!]!
-count: Int!}
-type RegularBoardCommentPage{edges: [RegularBoardCommentEdge!]!
-count: Int!}
-type AssignmentBoardPostEdge{node: AssignmentBoardPost!}
-type TogetherFreeVideoEdge{node: TogetherFreeVideo!}
-type SpecialProductPurchase{_id: MId!
-createdAt: Date!
-customer: User!
-amountTotal: Int!
-amountPaid: Int!
-adminDescription: String!}
-type Banner{_id: MId!
-createdAt: Date!
-name: String!
-imagePc: File!
-imageMobile: File!
-url: String!
-adminDescription: String!}
-type Badge{_id: MId!
-createdAt: Date!
-name: String!
-color: String!
-adminDescription: String!}
-type FaqCategoryEdge{node: FaqCategory!}
-type ReferrerLinkEdge{node: ReferrerLink!}
-type Lesson{_id: MId!
-createdAt: Date!
-course: Course!
-name: String!
-content: KollusVideo!
-assignment: String
-assignmentBoard: AssignmentBoard
-adminDescription: String!}
-type AssignmentBoardPage{edges: [AssignmentBoardEdge!]!
-count: Int!}
-type Inquiry{_id: MId!
-adminDescription: String!
-typeOfBusiness: String!
-phone: String!
-content: String!
-name: String!
-createdAt: Date!
-adminChecked: Boolean!
-careerPeriod: String!
-author: User
-salesMethod: String!}
-type InquiryKindPage{edges: [InquiryKindEdge!]!
-count: Int!}
-type SpecialProductPurchaseLink{_id: MId!
-createdAt: Date!
-specialProduct: SpecialProduct!
-specialProductPurchase: SpecialProductPurchase!
-ticketCondition: TicketCondition!
-ticket: Ticket
-adminDescription: String!}
-type AdminAuth{token: String!}
-type FreeBoardComment{_id: MId!
-adminDescription: String!
-content: String!
-replyOf: FreeBoardComment!
-createdAt: Date!
-author: User!
-post: FreeBoardPost!}
-type FreeBoardPostEdge{node: FreeBoardPost!}
-type InquiryKindEdge{node: InquiryKind!}
-type UserTogetherFreeVideoRelPage{edges: [UserTogetherFreeVideoRelEdge!]!
-count: Int!}
-type CourseTagRelPage{edges: [CourseTagRelEdge!]!
-count: Int!}
-type ReviewBoardPage{edges: [ReviewBoardEdge!]!
-count: Int!}
-type AdminSchedulePage{edges: [AdminScheduleEdge!]!
-count: Int!}
-type Mutation{referrerLinkDelete(_id: MId!): ReferrerLink!
-freeVideoCreate(name: String!,content: File!,adminDescription: String!): FreeVideo!
-coachScheduleUpdate(_id: MId!,kind: MId,customer: MId,period: Period,content: String,adminDescription: String): CoachSchedule!
-courseUpdate(description: String,category: MId,_id: MId!,adminDescription: String,attachments: [File!],orientation: File,title: String,brief: String,image: File,priceSales: Int,priceRegular: Int): Course!
-meetingRecordDelete(_id: MId!): MeetingRecord!
-badgeDelete(_id: MId!): Badge!
-lessonCreate(course: MId!,name: String!,content: String!,assignment: String,adminDescription: String!): Lesson!
-coursePackageCategoryMoveDown(_id: MId!): String
-lectureUpdate(description: String,_id: MId!,adminDescription: String,capacity: Int,title: String,brief: String,image: File,priceSales: Int,period: Period,applicationEndsAt: Date,location: String,priceRegular: Int): Lecture!
-courseReviewUpdateByAdmin(_id: MId!,content: String,adminChecked: Boolean,adminDescription: String): CourseReview!
-announcementDelete(_id: MId!): Announcement!
-userGroupCreate(name: String!,adminDescription: String!): UserGroup!
-badgeMoveDown(_id: MId!): String
-ticketCreate(user: MId!,condition: TicketConditionInput!): Ticket!
-allocateCoach(user: MId!,coach: MId!): String
-userGroupMoveUp(_id: MId!): String
-coachScheduleCreate(kind: MId!,owner: MId!,customer: MId,period: Period!,content: String!,adminDescription: String!): CoachSchedule!
-coursePackageCategoryUpdate(_id: MId!,name: String,adminDescription: String): CoursePackageCategory!
-deallocateCoach(user: MId!): String
-bannerMoveUp(_id: MId!): String
-courseTagCreate(kind: String!,name: String!,adminDescription: String!): CourseTag!
-userUpdateBySelf(id: MId!,name: String,phone: String,smsVerifCode: String,email: String,password: String): User!
-coursePackageCategoryDelete(_id: MId!): CoursePackageCategory!
-announcementCreate(name: String!,content: String!,adminDescription: String!): Announcement!
-userLogin(phone: String!,password: String!): UserAuth
-coursePackageCategoryCreate(name: String!,adminDescription: String!): CoursePackageCategory!
-userUpdateByCoachToStudent(handledByCoach: Boolean,email: String,typeOfBusiness: String,group: MId,password: String,phone: String,name: String,studentId: String,loginDenied: Boolean,id: MId!,togetherFreeVideoTicketCount: Int,coachChecked: Boolean): User!
-userCreateAccount(name: String!,nickname: String!,phone: String!,smsVerifCode: String!,email: String!,password: String!,referrerCode: String!,referrerLink: String!): UserAuth
-bannerMoveDown(_id: MId!): String
-inquiryDelete(_id: MId!): Inquiry!
-userBadgeRelCreate(user: MId!,badge: MId!): UserBadgeRel!
-userUpdateByAdmin(adminDescription: String,handledByCoach: Boolean,email: String,typeOfBusiness: String,group: MId,password: String,phone: String,coachExpiresAt: Date,name: String,studentId: String,loginDenied: Boolean,id: MId!,togetherFreeVideoTicketCount: Int,isCoach: String,coachChecked: Boolean): User!
-courseOwnershipPurchase(course: MId!,user: MId!,ticket: MId!): CourseOwnership!
-courseCategoryDelete(_id: MId!): CourseCategory!
-adminScheduleCreate(kind: MId!,period: Period!,content: String!,adminDescription: String!): AdminSchedule!
-lessonMoveDown(_id: MId!): String
-popupUpdate(_id: MId!,name: String,imagePc: File,imageMobile: File,adminDescription: String): Popup!
-lectureApplicationCreate(lecture: MId!,user: MId,adminDescription: String!,adminChecked: Boolean!): LectureApplication!
-userBadgeRelDeleteByUserAndBadge(user: MId!,badge: MId!): UserBadgeRel!
-courseOwnershipUpdate(_id: MId!,expiresAt: Date): CourseOwnership!
-lessonUpdate(_id: MId!,title: String,content: String,assignment: String,adminDescription: String): Lesson!
-inquiryUpdate(_id: MId!,adminChecked: Boolean,adminDescription: String): Inquiry!
-bannerDelete(_id: MId!): Banner!
-courseTagMoveUp(_id: MId!): String
-courseReviewCreate(course: MId!,author: MId!,content: String!): CourseReview!
-badgeMoveUp(_id: MId!): String
-courseReviewUpdateBySelf(_id: MId!,content: String): CourseReview!
-courseTagUpdate(_id: MId!,kind: String,name: String,adminDescription: String): CourseTag!
-bannerCreate(name: String!,imagePc: File!,imageMobile: File!,adminDescription: String!): Banner!
-referrerLinkCreate(owner: MId!,name: String!,url: String!,adminDescription: String!): ReferrerLink!
-popupMoveUp(_id: MId!): String
-announcementUpdate(_id: MId!,name: String,content: String,adminDescription: String): Announcement!
-lectureDelete(_id: MId!): Lecture!
-lessonDelete(_id: MId!): Lesson!
-lessonMoveUp(_id: MId!): String
-userLessonRelUpdate(user: MId!,lesson: MId!,lastWatchedAt: Date,progress: Float): UserLessonRel!
-coursePackageDelete(_id: MId!): CoursePackage!
-bannerUpdate(_id: MId!,name: String,imagePc: File,imageMobile: File,adminDescription: String): Banner!
-courseReviewDeleteByAdmin(_id: MId!): CourseReview!
-courseTagRelCreate(course: MId!,tag: MId!): CourseTagRel!
-inquiryCreate(user: MId,kind: MId!,name: String!,phone: String!,content: String!,typeOfBusiness: String!,careerPeriod: String!,salesMethod: String!): Inquiry!
-coursePackageCategoryMoveUp(_id: MId!): String
-courseCategoryCreate(kind: String!,name: String!,adminDescription: String!): CourseCategory!
-courseCategoryMoveUp(_id: MId!): String
-lectureApplicationUpdate(_id: MId!,adminDescription: String!,adminChecked: Boolean!): LectureApplication!
-courseTagMoveDown(_id: MId!): String
-meetingRecordUpdate(_id: MId!,customer: MId,startsAt: String,content: String,adminDescription: String): MeetingRecord!
-courseCreate(description: String!,category: MId!,adminDescription: String!,name: String!,attachments: [File!]!,orientation: File,brief: String!,image: File!,priceSales: Int!,priceRegular: Int!): Course!
-userGroupMoveDown(_id: MId!): String
-popupDelete(_id: MId!): Popup!
-courseTagRelDelete(_id: MId!): CourseTagRel!
-courseTagDelete(_id: MId!): CourseTag!
-meetingRecordCreate(author: MId!,customer: MId,startsAt: String!,content: String!,adminDescription: String!): MeetingRecord!
-coachScheduleDelete(_id: MId!): CoachSchedule!
-coursePackageCreate(description: String!,category: MId!,adminDescription: String!,courses: [MId!]!,title: String!,brief: String!,image: File!,priceSales: Int!,priceRegular: Int!): CoursePackage!
-userGroupUpdate(_id: MId!,name: String,adminDescription: String): UserGroup!
-courseDelete(_id: MId!): Course!
-togetherFreeVideoCreate(name: String!,content: KollusVideo!,adminDescription: String!): TogetherFreeVideo!
-lectureCreate(description: String!,adminDescription: String!,capacity: Int!,title: String!,brief: String!,image: File!,priceSales: Int!,period: Period!,applicationEndsAt: Date!,location: String!,priceRegular: Int!): Lecture!
-userGroupDelete(_id: MId!): UserGroup!
-lectureApplicationDelete(_id: MId!): LectureApplication!
-adminScheduleDelete(_id: MId!): AdminSchedule!
-togetherFreeVideoUpdate(_id: MId!,name: String,content: KollusVideo,adminDescription: String): TogetherFreeVideo!
-courseReviewDeleteBySelf(_id: MId!): CourseReview!
-adminScheduleUpdate(_id: MId!,kind: MId,period: Period,content: String,adminDescription: String): AdminSchedule!
-courseCategoryMoveDown(_id: MId!): String
-adminVerifyToken(token: String!): AdminAuth
-referrerLinkUpdate(_id: MId!,name: String!,adminDescription: String!): ReferrerLink!
-userBadgeRelDelete(_id: MId!): UserBadgeRel!
-coursePackageUpdate(description: String,category: MId,_id: MId!,adminDescription: String,courses: [MId!],title: String,brief: String,image: File,priceSales: Int,priceRegular: Int): CoursePackage!
-freeVideoUpdate(_id: MId!,name: String,content: File,adminDescription: String): FreeVideo!
-popupMoveDown(_id: MId!): String
-userGetTogetherFreeVideoTicketForFree(user: MId!): String
-userLeave(id: MId!,reason: String!): String
-popupCreate(name: String!,imagePc: File!,imageMobile: File!,adminDescription: String!): Popup!
-courseOwnershipCreate(course: MId!,user: MId!,expiresAt: Date!): CourseOwnership!
-courseCategoryUpdate(_id: MId!,name: String,adminDescription: String): CourseCategory!
-lectureApplicationPurchase(lecture: MId!,user: MId!,ticket: MId!): LectureApplication!
-freeVideoDelete(_id: MId!): FreeVideo!
-badgeCreate(name: String!,color: String!): Badge!
-badgeUpdate(_id: MId!,name: String,color: String): Badge!
-togetherFreeVideoDelete(_id: MId!): TogetherFreeVideo!
-coursePackagePurchase(package: MId!,user: MId!,tiket: MId!): String
-adminLogin(id: String!,password: String!): AdminAuth}
-type SpecialProductPurchaseLinkEdge{node: SpecialProductPurchaseLink!}
-type BadgePage{edges: [BadgeEdge!]!
-count: Int!}
-type AssignmentBoardComment{_id: MId!
-adminDescription: String!
-content: String!
-replyOf: AssignmentBoardComment!
-createdAt: Date!
-author: User!
-post: AssignmentBoardPost!}
-type RegularBoard{_id: MId!
-createdAt: Date!
-category: RegularBoardCategory!
-name: String!
-content: String!
-adminDescription: String!
-requiredBadges: [Badge!]!}
-type RegularBoardCategoryEdge{node: RegularBoardCategory!}
-type CourseReviewPage{edges: [CourseReviewEdge!]!
-count: Int!}
-type ReportTargetReviewBoardComment{comment: ReviewBoardComment!
-kind: ReportTargetKind}
-type InquiryPage{edges: [InquiryEdge!]!
-count: Int!}
-type CourseOwnershipEdge{node: CourseOwnership!}
-type CoursePackage{description: String!
-category: CoursePackageCategory!
-_id: MId!
-adminDescription: String!
-name: String!
-courses: [Course!]!
-createdAt: Date!
-brief: String!
-priceSales: Int!
-priceRegular: Int!}
-type FreeVideoEdge{node: FreeVideo!}
-type TicketReasonCourse{user: User!
-course: Course!
-kind: TicketReasonKind}
-type LectureApplicationEdge{node: LectureApplication!}
-type AssignmentBoardPostPage{edges: [AssignmentBoardPostEdge!]!
-count: Int!}
-type Report{_id: MId!
-createdAt: Date!
-author: User!
-target: ReportTarget!
-content: String!
-adminDescription: String!}
-type FreeBoardEdge{node: FreeBoard!}
-type ReviewBoardCommentPage{edges: [ReviewBoardCommentEdge!]!
-count: Int!}
-type PopupPage{edges: [PopupEdge!]!
-count: Int!}
-type AnnouncementPage{edges: [AnnouncementEdge!]!
-count: Int!}
-type CoursePackageEdge{node: CoursePackage!}
-type BannerPage{edges: [BannerEdge!]!
-count: Int!}
-type CourseReview{_id: MId!
-createdAt: Date!
-author: User!
-course: Course!
-content: String!
-adminChecked: Boolean!
-adminDescription: String!}
-type ReportTargetFreeBoardPost{post: FreeBoardPost!
-kind: ReportTargetKind}
-type CourseTagRel{_id: MId!
-createdAt: Date!
-course: Course!
-tag: CourseTag!}
-type FreeBoardCommentEdge{node: FreeBoardComment!}
-type CourseOwnershipPage{edges: [CourseOwnershipEdge!]!
-count: Int!}
-type TicketCondition{method: TicketMethod!
-price: Int!
-installmentMonths: Int!}
-type UserLessonRelEdge{node: UserLessonRel!}
-type TicketReasonCoursePackage{user: User!
-coursePackage: CoursePackage!
-kind: TicketReasonKind}
-type CourseKind{_id: String!
-createdAt: Date!
-tags: [CourseTag!]!
-categories: [CourseCategory!]!}
-type CoachScheduleKind{_id: MId!
-createdAt: Date!
-name: String!
-adminDescription: String!}
-type SpecialProductPurchaseLinkPage{edges: [SpecialProductPurchaseLinkEdge!]!
-count: Int!}
-type UserLessonRel{_id: MId!
-createdAt: Date!
-user: User!
-lesson: Lesson!
-progress: Float!
-lastWatchedAt: Date}
-type AssignmentBoardMemberPage{edges: [AssignmentBoardMemberEdge!]!
-count: Int!}
-type LectureApplicationPage{edges: [LectureApplicationEdge!]!
-count: Int!}
-type ReportTargetCourseReview{courseReview: CourseReview!
-kind: ReportTargetKind}
-type CoachSchedule{_id: MId!
-createdAt: Date!
-owner: User!
-customer: User
-period: Period!
-content: String!
-adminDescription: String!}
-type AdminScheduleKindEdge{node: AdminScheduleKind!}
-type CourseKindEdge{node: CourseKind!}
-type CoachScheduleEdge{node: CoachSchedule!}
-type AssignmentBoardCommentPage{edges: [AssignmentBoardCommentEdge!]!
-count: Int!}
-type RegularBoardPostPage{edges: [RegularBoardPostEdge!]!
-count: Int!}
-type ReviewBoardCategoryEdge{node: ReviewBoardCategory!}
-type AssignmentBoardEdge{node: AssignmentBoard!}
-type TogetherFreeVideoOwnershipEdge{node: TogetherFreeVideoOwnership!}
-type UserGroup{_id: MId!
-createdAt: Date!
-name: String!}
-type FaqCategory{_id: MId!
-createdAt: Date!
-name: String!
-items: [Faq!]!
-adminDescription: String!}
-type ReviewBoardPostPage{edges: [ReviewBoardPostEdge!]!
-count: Int!}
-type ReviewBoardCategory{_id: MId!
-createdAt: Date!
-name: String!
-boards: [ReviewBoard!]!
-adminDescription: String!}
-type FaqPage{edges: [FaqEdge!]!
-count: Int!}
-type AdminSchedule{_id: MId!
-createdAt: Date!
-period: Period!
-content: String!
-adminDescription: String!}
-type AssignmentBoardMemberEdge{node: AssignmentBoardMember!}
-type ReportTargetRegularBoardPost{post: RegularBoardPost!
-kind: ReportTargetKind}
-type CourseReviewEdge{node: CourseReview!}
-type ReviewBoard{_id: MId!
-createdAt: Date!
-category: ReviewBoardCategory!
-name: String!
-content: String!
-adminDescription: String!
-requiredBadges: [Badge!]!}
-type LecturePage{edges: [LectureEdge!]!
-count: Int!}
-type UserTogetherFreeVideoRelEdge{node: UserTogetherFreeVideoRel!}
-type MeetingRecord{_id: MId!
-createdAt: Date!
-author: User!
-customer: User!
-startsAt: String!
-content: String!
-adminDescription: String!}
-type TogetherFreeVideoOwnership{_id: MId!
-createdAt: Date!
-user: User!
-togetherFreeVideo: TogetherFreeVideo!
-expiresAt: Date!}
-type UserGroupEdge{node: UserGroup!}
-type ReviewBoardPost{_id: MId!
-createdAt: Date!
-name: String!
-content: String!
-isImportant: Boolean!
-adminDescription: String!}
-type RegularBoardPostEdge{node: RegularBoardPost!}
-type MeetingRecordEdge{node: MeetingRecord!}
-type InquiryEdge{node: Inquiry!}
-type LectureEdge{node: Lecture!}
-type UserAuth{token: String!
-user: User!}
-type CourseKindPage{edges: [CourseKindEdge!]!
-count: Int!}
-type FreeBoardPostPage{edges: [FreeBoardPostEdge!]!
-count: Int!}
-type CoursePackageCategoryPage{edges: [CoursePackageCategoryEdge!]!
-count: Int!}
-type Ticket{tossPaymentKey: String
-_id: MId!
-adminDescription: String!
-tossPaymentValidationError: Unknown
-createdAt: Date!
-reason: TicketReason
-status: TicketStatus!
-condition: TicketCondition!
-user: User!}
-type ReviewBoardPostEdge{node: ReviewBoardPost!}
-type CourseCategory{_id: MId!
-createdAt: Date!
-kind: CourseKind!
-name: String!
-adminDescription: String!}
-type CourseEdge{node: Course!}
-type TogetherFreeVideoOwnershipPage{edges: [TogetherFreeVideoOwnershipEdge!]!
-count: Int!}
-type ReferrerLink{_id: MId!
-createdAt: Date!
-owner: User!
-name: String!
-url: String!
-adminDescription: String!}
-type User{_id: MId!
-adminDescription: String!
-email: String!
-referrerCode: String!
-typeOfBusiness: String!
-group: UserGroup
-phone: String!
-coachExpiresAt: Date!
-name: String!
-nickname: String!
-createdAt: Date!
-coach: User
-studentId: String!
-loginDenied: Boolean!
-togetherFreeVideoTicketCount: Int!
-isCoach: Boolean!
-coachChecked: Boolean!}
-type ReportTargetRegularBoardComment{comment: RegularBoardComment!
-kind: ReportTargetKind}
-type FreeBoardPost{_id: MId!
-createdAt: Date!
-name: String!
-content: String!
-isImportant: Boolean!
-adminDescription: String!}
-type FaqEdge{node: Faq!}
-type TicketReasonLecture{user: User!
-lecture: Lecture!
-kind: TicketReasonKind}
-type InquiryKind{_id: MId!
-createdAt: Date!
-name: String!
-adminDescription: String!}
-type CourseCategoryEdge{node: CourseCategory!}
-type CourseTagRelEdge{node: CourseTagRel!}
-type AssignmentBoardPost{_id: MId!
-createdAt: Date!
-name: String!
-content: String!
-isImportant: Boolean!
-adminDescription: String!}
-type CourseOwnership{_id: MId!
-createdAt: Date!
-user: User!
-course: Course!
-expiresAt: Date!
-adminDescription: String!}
-type RegularBoardCategory{_id: MId!
-createdAt: Date!
-name: String!
-boards: [RegularBoard!]!
-adminDescription: String!}
-type CoursePage{edges: [CourseEdge!]!
-count: Int!}
-type TicketReasonSpecialProduct{user: User!
-specialProduct: SpecialProduct!
-specialProductPurchase: SpecialProductPurchase!
-specialProductPurchaseLink: SpecialProductPurchaseLink!
-kind: TicketReasonKind}
-type BadgeEdge{node: Badge!}
-type Course{description: String!
-tags: [CourseTag!]!
-_id: MId!
-adminDescription: String!
-name: String!
-attachments: [File!]!
-orientation: File
-createdAt: Date!
-categories: [CourseCategory!]!
-brief: String!
-image: File!
-priceSales: Int!
-lessons: [Lesson!]!
-priceRegular: Int!}
-type AssignmentBoardCategory{_id: MId!
-createdAt: Date!
-name: String!
-boards: [AssignmentBoard!]!
-adminDescription: String!}
-type BannerEdge{node: Banner!}
-type RegularBoardComment{_id: MId!
-adminDescription: String!
-content: String!
-replyOf: RegularBoardComment!
-createdAt: Date!
-author: User!
-post: RegularBoardPost!}
-type TicketPage{edges: [TicketEdge!]!
-count: Int!}
-type AdminScheduleKindPage{edges: [AdminScheduleKindEdge!]!
-count: Int!}
-type CourseTagPage{edges: [CourseTagEdge!]!
-count: Int!}
-type TicketEdge{node: Ticket!}
-type SpecialProductPage{edges: [SpecialProductEdge!]!
-count: Int!}
-type AnnouncementEdge{node: Announcement!}
-type ReportTargetAssignmentBoardPost{post: AssignmentBoardPost!
-kind: ReportTargetKind}
-type ReportTargetAssignmentBoardComment{comment: AssignmentBoardComment!
-kind: ReportTargetKind}
-type FreeVideo{_id: MId!
-createdAt: Date!
-name: String!
-content: File!
-adminDescription: String!}
-type UserLessonRelPage{edges: [UserLessonRelEdge!]!
-count: Int!}
-type CoachSchedulePage{edges: [CoachScheduleEdge!]!
-count: Int!}
-type AssignmentBoardCommentEdge{node: AssignmentBoardComment!}
-type UserGroupPage{edges: [UserGroupEdge!]!
-count: Int!}
-type AdminScheduleEdge{node: AdminSchedule!}
-type FreeBoard{_id: MId!
-createdAt: Date!
-category: FreeBoardCategory!
-name: String!
-content: String!
-adminDescription: String!
-requiredBadges: [Badge!]!}
-type RegularBoardPage{edges: [RegularBoardEdge!]!
-count: Int!}
-type FreeBoardCommentPage{edges: [FreeBoardCommentEdge!]!
-count: Int!}
-type ReviewBoardCommentEdge{node: ReviewBoardComment!}
-type AssignmentBoard{_id: MId!
-createdAt: Date!
-category: AssignmentBoardCategory!
-name: String!
-content: String!
-adminDescription: String!}
-type UserPage{edges: [UserEdge!]!
-count: Int!}
-type Lecture{description: String!
-_id: MId!
-adminDescription: String!
-capacity: Int!
-name: String!
-createdAt: Date!
-brief: String!
-priceSales: Int!
-period: Period!
-applicationEndsAt: Date!
-priceRegular: Int!}
-type CourseTagEdge{node: CourseTag!}
-type FreeBoardCategoryPage{edges: [FreeBoardCategoryEdge!]!
-count: Int!}
-type RegularBoardEdge{node: RegularBoard!}
-type Popup{_id: MId!
-createdAt: Date!
-name: String!
-imagePc: File!
-imageMobile: File!
-url: String!
-adminDescription: String!}
-type UserBadgeRel{_id: MId!
-createdAt: Date!
-user: User!
-badge: Badge!}
-type SpecialProduct{_id: MId!
-createdAt: Date!
-name: String!
-priceSales: Int!
-adminDescription: String!}
-type LessonEdge{node: Lesson!}
-type CoursePackageCategory{_id: MId!
-createdAt: Date!
-name: String!
-adminDescription: String!}
-type MeetingRecordPage{edges: [MeetingRecordEdge!]!
-count: Int!}
-type CourseTag{_id: MId!
-createdAt: Date!
-kind: CourseKind!
-name: String!
-adminDescription: String!}
-type ReportTargetFreeBoardComment{comment: FreeBoardComment!
-kind: ReportTargetKind}
-type Announcement{_id: MId!
-createdAt: Date!
-name: String!
-content: String!
-adminDescription: String!}
-type ReportEdge{node: Report!}
-type RegularBoardCategoryPage{edges: [RegularBoardCategoryEdge!]!
-count: Int!}
-type AdminScheduleKind{_id: MId!
-createdAt: Date!
-name: String!
-adminDescription: String!}
-type RegularBoardCommentEdge{node: RegularBoardComment!}
-type UserBadgeRelPage{edges: [UserBadgeRelEdge!]!
-count: Int!}
-type CourseCategoryPage{edges: [CourseCategoryEdge!]!
-count: Int!}
-type LessonPage{edges: [LessonEdge!]!
-count: Int!}
-type CoachScheduleKindEdge{node: CoachScheduleKind!}
-type ReviewBoardCategoryPage{edges: [ReviewBoardCategoryEdge!]!
-count: Int!}
-type Faq{_id: MId!
-createdAt: Date!
-question: String!
-answer: String!
-adminDescription: String!}
-type UserTogetherFreeVideoRel{_id: MId!
-createdAt: Date!
-user: User!
-togetherFreeVideo: TogetherFreeVideo!
-progress: Float!
-lastWatchedAt: Date}
-type FreeBoardCategory{_id: MId!
-createdAt: Date!
-name: String!
-boards: [FreeBoard!]!
-adminDescription: String!}
-type AssignmentBoardCategoryEdge{node: AssignmentBoardCategory!}
-type ReportTargetReviewBoardPost{post: ReviewBoardPost!
-kind: ReportTargetKind}
-type UserEdge{node: User!}
-type SpecialProductPurchasePage{edges: [SpecialProductPurchaseEdge!]!
-count: Int!}
-type SpecialProductPurchaseEdge{node: SpecialProductPurchase!}
-type UserBadgeRelEdge{node: UserBadgeRel!}
-type ReviewBoardComment{_id: MId!
-adminDescription: String!
-content: String!
-replyOf: ReviewBoardComment!
-createdAt: Date!
-author: User!
-post: ReviewBoardPost!}
-type CoursePackagePage{edges: [CoursePackageEdge!]!
-count: Int!}
-type RegularBoardPost{_id: MId!
-createdAt: Date!
-name: String!
-content: String!
-isImportant: Boolean!
-adminDescription: String!}
-type CoachScheduleKindPage{edges: [CoachScheduleKindEdge!]!
-count: Int!}
-type FaqCategoryPage{edges: [FaqCategoryEdge!]!
-count: Int!}
-type FreeBoardPage{edges: [FreeBoardEdge!]!
-count: Int!}
-type CoursePackageCategoryEdge{node: CoursePackageCategory!}
-type ReviewBoardEdge{node: ReviewBoard!}
-type FreeBoardCategoryEdge{node: FreeBoardCategory!}
-type TogetherFreeVideo{_id: MId!
-createdAt: Date!
-name: String!
-content: KollusVideo!
-adminDescription: String!}
-input TicketConditionInput{method: TicketMethod!
-price: Int!
-installmentMonths: Int!}
-input PageOptions{skip: Int!
-limit: Int!}
-union TicketReason = TicketReasonCourse | TicketReasonCoursePackage | TicketReasonLecture | TicketReasonSpecialProduct
-union ReportTarget = ReportTargetCourseReview | ReportTargetFreeBoardPost | ReportTargetFreeBoardComment | ReportTargetRegularBoardPost | ReportTargetRegularBoardComment | ReportTargetReviewBoardPost | ReportTargetReviewBoardComment | ReportTargetAssignmentBoardPost | ReportTargetAssignmentBoardComment
+enum ReportTargetKind {
+  COURSE_REVIEW
+  FREE_BOARD_POST
+  FREE_BOARD_COMMENT
+  REGULAR_BOARD_POST
+  REGULAR_BOARD_COMMENT
+  REVIEW_BOARD_POST
+  REVIEW_BOARD_COMMENT
+  ASSIGNMENT_BOARD_POST
+  ASSIGNMENT_BOARD_COMMENT
+}
+enum TicketStatus {
+  PENDING
+  VALIDATING
+  SUCCEED
+  VALIDATION_FAILED
+}
+enum TicketReasonKind {
+  COURSE
+  COURSE_PACKAGE
+  LECTURE
+  SPECIAL_PRODUCT
+}
+enum TicketMethod {
+  VIRTUAL_ACCOUNT
+  CARD
+}
+type LectureApplication {
+  _id: MId!
+  createdAt: Date!
+  lecture: Lecture!
+  user: User
+  adminChecked: Boolean!
+  adminDescription: String!
+}
+type AssignmentBoardCategoryPage {
+  edges: [AssignmentBoardCategoryEdge!]!
+  count: Int!
+}
+type TogetherFreeVideoPage {
+  edges: [TogetherFreeVideoEdge!]!
+  count: Int!
+}
+type ReferrerLinkPage {
+  edges: [ReferrerLinkEdge!]!
+  count: Int!
+}
+type FreeVideoPage {
+  edges: [FreeVideoEdge!]!
+  count: Int!
+}
+type PopupEdge {
+  node: Popup!
+}
+type AssignmentBoardMember {
+  _id: MId!
+  createdAt: Date!
+  user: User!
+  board: AssignmentBoard!
+}
+type SpecialProductEdge {
+  node: SpecialProduct!
+}
+type ReportPage {
+  edges: [ReportEdge!]!
+  count: Int!
+}
+type RegularBoardCommentPage {
+  edges: [RegularBoardCommentEdge!]!
+  count: Int!
+}
+type AssignmentBoardPostEdge {
+  node: AssignmentBoardPost!
+}
+type TogetherFreeVideoEdge {
+  node: TogetherFreeVideo!
+}
+type SpecialProductPurchase {
+  _id: MId!
+  createdAt: Date!
+  customer: User!
+  amountTotal: Int!
+  amountPaid: Int!
+  adminDescription: String!
+}
+type Banner {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  imagePc: File!
+  imageMobile: File!
+  url: String!
+  adminDescription: String!
+}
+type Badge {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  color: String!
+  adminDescription: String!
+}
+type FaqCategoryEdge {
+  node: FaqCategory!
+}
+type ReferrerLinkEdge {
+  node: ReferrerLink!
+}
+type Lesson {
+  _id: MId!
+  createdAt: Date!
+  course: Course!
+  name: String!
+  content: KollusVideo!
+  assignment: String
+  assignmentBoard: AssignmentBoard
+  adminDescription: String!
+}
+type AssignmentBoardPage {
+  edges: [AssignmentBoardEdge!]!
+  count: Int!
+}
+type Inquiry {
+  _id: MId!
+  adminDescription: String!
+  typeOfBusiness: String!
+  phone: String!
+  content: String!
+  name: String!
+  createdAt: Date!
+  adminChecked: Boolean!
+  careerPeriod: String!
+  author: User
+  salesMethod: String!
+}
+type InquiryKindPage {
+  edges: [InquiryKindEdge!]!
+  count: Int!
+}
+type SpecialProductPurchaseLink {
+  _id: MId!
+  createdAt: Date!
+  specialProduct: SpecialProduct!
+  specialProductPurchase: SpecialProductPurchase!
+  ticketCondition: TicketCondition!
+  ticket: Ticket
+  adminDescription: String!
+}
+type AdminAuth {
+  token: String!
+}
+type FreeBoardComment {
+  _id: MId!
+  adminDescription: String!
+  content: String!
+  replyOf: FreeBoardComment!
+  createdAt: Date!
+  author: User!
+  post: FreeBoardPost!
+}
+type FreeBoardPostEdge {
+  node: FreeBoardPost!
+}
+type InquiryKindEdge {
+  node: InquiryKind!
+}
+type UserTogetherFreeVideoRelPage {
+  edges: [UserTogetherFreeVideoRelEdge!]!
+  count: Int!
+}
+type CourseTagRelPage {
+  edges: [CourseTagRelEdge!]!
+  count: Int!
+}
+type ReviewBoardPage {
+  edges: [ReviewBoardEdge!]!
+  count: Int!
+}
+type AdminSchedulePage {
+  edges: [AdminScheduleEdge!]!
+  count: Int!
+}
+type Mutation {
+  referrerLinkDelete(_id: MId!): ReferrerLink!
+  freeVideoCreate(
+    name: String!
+    content: File!
+    adminDescription: String!
+  ): FreeVideo!
+  coachScheduleUpdate(
+    _id: MId!
+    kind: MId
+    customer: MId
+    period: Period
+    content: String
+    adminDescription: String
+  ): CoachSchedule!
+  courseUpdate(
+    description: String
+    category: MId
+    _id: MId!
+    adminDescription: String
+    attachments: [File!]
+    orientation: File
+    title: String
+    brief: String
+    image: File
+    priceSales: Int
+    priceRegular: Int
+  ): Course!
+  meetingRecordDelete(_id: MId!): MeetingRecord!
+  badgeDelete(_id: MId!): Badge!
+  lessonCreate(
+    course: MId!
+    name: String!
+    content: String!
+    assignment: String
+    adminDescription: String!
+  ): Lesson!
+  coursePackageCategoryMoveDown(_id: MId!): String
+  lectureUpdate(
+    description: String
+    _id: MId!
+    adminDescription: String
+    capacity: Int
+    title: String
+    brief: String
+    image: File
+    priceSales: Int
+    period: Period
+    applicationEndsAt: Date
+    location: String
+    priceRegular: Int
+  ): Lecture!
+  courseReviewUpdateByAdmin(
+    _id: MId!
+    content: String
+    adminChecked: Boolean
+    adminDescription: String
+  ): CourseReview!
+  announcementDelete(_id: MId!): Announcement!
+  userGroupCreate(name: String!, adminDescription: String!): UserGroup!
+  badgeMoveDown(_id: MId!): String
+  ticketCreate(user: MId!, condition: TicketConditionInput!): Ticket!
+  allocateCoach(user: MId!, coach: MId!): String
+  userGroupMoveUp(_id: MId!): String
+  coachScheduleCreate(
+    kind: MId!
+    owner: MId!
+    customer: MId
+    period: Period!
+    content: String!
+    adminDescription: String!
+  ): CoachSchedule!
+  coursePackageCategoryUpdate(
+    _id: MId!
+    name: String
+    adminDescription: String
+  ): CoursePackageCategory!
+  deallocateCoach(user: MId!): String
+  bannerMoveUp(_id: MId!): String
+  courseTagCreate(
+    kind: String!
+    name: String!
+    adminDescription: String!
+  ): CourseTag!
+  userUpdateBySelf(
+    id: MId!
+    name: String
+    phone: String
+    smsVerifCode: String
+    email: String
+    password: String
+  ): User!
+  coursePackageCategoryDelete(_id: MId!): CoursePackageCategory!
+  announcementCreate(
+    name: String!
+    content: String!
+    adminDescription: String!
+  ): Announcement!
+  userLogin(phone: String!, password: String!): UserAuth
+  coursePackageCategoryCreate(
+    name: String!
+    adminDescription: String!
+  ): CoursePackageCategory!
+  userUpdateByCoachToStudent(
+    handledByCoach: Boolean
+    email: String
+    typeOfBusiness: String
+    group: MId
+    password: String
+    phone: String
+    name: String
+    studentId: String
+    loginDenied: Boolean
+    id: MId!
+    togetherFreeVideoTicketCount: Int
+    coachChecked: Boolean
+  ): User!
+  userCreateAccount(
+    name: String!
+    nickname: String!
+    phone: String!
+    smsVerifCode: String!
+    email: String!
+    password: String!
+    referrerCode: String!
+    referrerLink: String!
+  ): UserAuth
+  bannerMoveDown(_id: MId!): String
+  inquiryDelete(_id: MId!): Inquiry!
+  userBadgeRelCreate(user: MId!, badge: MId!): UserBadgeRel!
+  userUpdateByAdmin(
+    adminDescription: String
+    handledByCoach: Boolean
+    email: String
+    typeOfBusiness: String
+    group: MId
+    password: String
+    phone: String
+    coachExpiresAt: Date
+    name: String
+    studentId: String
+    loginDenied: Boolean
+    id: MId!
+    togetherFreeVideoTicketCount: Int
+    isCoach: String
+    coachChecked: Boolean
+  ): User!
+  courseOwnershipPurchase(
+    course: MId!
+    user: MId!
+    ticket: MId!
+  ): CourseOwnership!
+  courseCategoryDelete(_id: MId!): CourseCategory!
+  adminScheduleCreate(
+    kind: MId!
+    period: Period!
+    content: String!
+    adminDescription: String!
+  ): AdminSchedule!
+  lessonMoveDown(_id: MId!): String
+  popupUpdate(
+    _id: MId!
+    name: String
+    imagePc: File
+    imageMobile: File
+    adminDescription: String
+  ): Popup!
+  lectureApplicationCreate(
+    lecture: MId!
+    user: MId
+    adminDescription: String!
+    adminChecked: Boolean!
+  ): LectureApplication!
+  userBadgeRelDeleteByUserAndBadge(user: MId!, badge: MId!): UserBadgeRel!
+  courseOwnershipUpdate(_id: MId!, expiresAt: Date): CourseOwnership!
+  lessonUpdate(
+    _id: MId!
+    title: String
+    content: String
+    assignment: String
+    adminDescription: String
+  ): Lesson!
+  inquiryUpdate(
+    _id: MId!
+    adminChecked: Boolean
+    adminDescription: String
+  ): Inquiry!
+  bannerDelete(_id: MId!): Banner!
+  courseTagMoveUp(_id: MId!): String
+  courseReviewCreate(
+    course: MId!
+    author: MId!
+    content: String!
+  ): CourseReview!
+  badgeMoveUp(_id: MId!): String
+  courseReviewUpdateBySelf(_id: MId!, content: String): CourseReview!
+  courseTagUpdate(
+    _id: MId!
+    kind: String
+    name: String
+    adminDescription: String
+  ): CourseTag!
+  bannerCreate(
+    name: String!
+    imagePc: File!
+    imageMobile: File!
+    adminDescription: String!
+  ): Banner!
+  referrerLinkCreate(
+    owner: MId!
+    name: String!
+    url: String!
+    adminDescription: String!
+  ): ReferrerLink!
+  popupMoveUp(_id: MId!): String
+  announcementUpdate(
+    _id: MId!
+    name: String
+    content: String
+    adminDescription: String
+  ): Announcement!
+  lectureDelete(_id: MId!): Lecture!
+  lessonDelete(_id: MId!): Lesson!
+  lessonMoveUp(_id: MId!): String
+  userLessonRelUpdate(
+    user: MId!
+    lesson: MId!
+    lastWatchedAt: Date
+    progress: Float
+  ): UserLessonRel!
+  coursePackageDelete(_id: MId!): CoursePackage!
+  bannerUpdate(
+    _id: MId!
+    name: String
+    imagePc: File
+    imageMobile: File
+    adminDescription: String
+  ): Banner!
+  courseReviewDeleteByAdmin(_id: MId!): CourseReview!
+  courseTagRelCreate(course: MId!, tag: MId!): CourseTagRel!
+  inquiryCreate(
+    user: MId
+    kind: MId!
+    name: String!
+    phone: String!
+    content: String!
+    typeOfBusiness: String!
+    careerPeriod: String!
+    salesMethod: String!
+  ): Inquiry!
+  coursePackageCategoryMoveUp(_id: MId!): String
+  courseCategoryCreate(
+    kind: String!
+    name: String!
+    adminDescription: String!
+  ): CourseCategory!
+  courseCategoryMoveUp(_id: MId!): String
+  lectureApplicationUpdate(
+    _id: MId!
+    adminDescription: String!
+    adminChecked: Boolean!
+  ): LectureApplication!
+  courseTagMoveDown(_id: MId!): String
+  meetingRecordUpdate(
+    _id: MId!
+    customer: MId
+    startsAt: String
+    content: String
+    adminDescription: String
+  ): MeetingRecord!
+  courseCreate(
+    description: String!
+    category: MId!
+    adminDescription: String!
+    name: String!
+    attachments: [File!]!
+    orientation: File
+    brief: String!
+    image: File!
+    priceSales: Int!
+    priceRegular: Int!
+  ): Course!
+  userGroupMoveDown(_id: MId!): String
+  popupDelete(_id: MId!): Popup!
+  courseTagRelDelete(_id: MId!): CourseTagRel!
+  courseTagDelete(_id: MId!): CourseTag!
+  meetingRecordCreate(
+    author: MId!
+    customer: MId
+    startsAt: String!
+    content: String!
+    adminDescription: String!
+  ): MeetingRecord!
+  coachScheduleDelete(_id: MId!): CoachSchedule!
+  coursePackageCreate(
+    description: String!
+    category: MId!
+    adminDescription: String!
+    courses: [MId!]!
+    title: String!
+    brief: String!
+    image: File!
+    priceSales: Int!
+    priceRegular: Int!
+  ): CoursePackage!
+  userGroupUpdate(_id: MId!, name: String, adminDescription: String): UserGroup!
+  courseDelete(_id: MId!): Course!
+  togetherFreeVideoCreate(
+    name: String!
+    content: KollusVideo!
+    adminDescription: String!
+  ): TogetherFreeVideo!
+  lectureCreate(
+    description: String!
+    adminDescription: String!
+    capacity: Int!
+    title: String!
+    brief: String!
+    image: File!
+    priceSales: Int!
+    period: Period!
+    applicationEndsAt: Date!
+    location: String!
+    priceRegular: Int!
+  ): Lecture!
+  userGroupDelete(_id: MId!): UserGroup!
+  lectureApplicationDelete(_id: MId!): LectureApplication!
+  adminScheduleDelete(_id: MId!): AdminSchedule!
+  togetherFreeVideoUpdate(
+    _id: MId!
+    name: String
+    content: KollusVideo
+    adminDescription: String
+  ): TogetherFreeVideo!
+  courseReviewDeleteBySelf(_id: MId!): CourseReview!
+  adminScheduleUpdate(
+    _id: MId!
+    kind: MId
+    period: Period
+    content: String
+    adminDescription: String
+  ): AdminSchedule!
+  courseCategoryMoveDown(_id: MId!): String
+  adminVerifyToken(token: String!): AdminAuth
+  referrerLinkUpdate(
+    _id: MId!
+    name: String!
+    adminDescription: String!
+  ): ReferrerLink!
+  userBadgeRelDelete(_id: MId!): UserBadgeRel!
+  coursePackageUpdate(
+    description: String
+    category: MId
+    _id: MId!
+    adminDescription: String
+    courses: [MId!]
+    title: String
+    brief: String
+    image: File
+    priceSales: Int
+    priceRegular: Int
+  ): CoursePackage!
+  freeVideoUpdate(
+    _id: MId!
+    name: String
+    content: File
+    adminDescription: String
+  ): FreeVideo!
+  popupMoveDown(_id: MId!): String
+  userGetTogetherFreeVideoTicketForFree(user: MId!): String
+  userLeave(id: MId!, reason: String!): String
+  popupCreate(
+    name: String!
+    imagePc: File!
+    imageMobile: File!
+    adminDescription: String!
+  ): Popup!
+  courseOwnershipCreate(
+    course: MId!
+    user: MId!
+    expiresAt: Date!
+  ): CourseOwnership!
+  courseCategoryUpdate(
+    _id: MId!
+    name: String
+    adminDescription: String
+  ): CourseCategory!
+  lectureApplicationPurchase(
+    lecture: MId!
+    user: MId!
+    ticket: MId!
+  ): LectureApplication!
+  freeVideoDelete(_id: MId!): FreeVideo!
+  badgeCreate(name: String!, color: String!): Badge!
+  badgeUpdate(_id: MId!, name: String, color: String): Badge!
+  togetherFreeVideoDelete(_id: MId!): TogetherFreeVideo!
+  coursePackagePurchase(package: MId!, user: MId!, tiket: MId!): String
+  adminLogin(id: String!, password: String!): AdminAuth
+}
+type SpecialProductPurchaseLinkEdge {
+  node: SpecialProductPurchaseLink!
+}
+type BadgePage {
+  edges: [BadgeEdge!]!
+  count: Int!
+}
+type AssignmentBoardComment {
+  _id: MId!
+  adminDescription: String!
+  content: String!
+  replyOf: AssignmentBoardComment!
+  createdAt: Date!
+  author: User!
+  post: AssignmentBoardPost!
+}
+type RegularBoard {
+  _id: MId!
+  createdAt: Date!
+  category: RegularBoardCategory!
+  name: String!
+  content: String!
+  adminDescription: String!
+  requiredBadges: [Badge!]!
+}
+type RegularBoardCategoryEdge {
+  node: RegularBoardCategory!
+}
+type CourseReviewPage {
+  edges: [CourseReviewEdge!]!
+  count: Int!
+}
+type ReportTargetReviewBoardComment {
+  comment: ReviewBoardComment!
+  kind: ReportTargetKind
+}
+type InquiryPage {
+  edges: [InquiryEdge!]!
+  count: Int!
+}
+type CourseOwnershipEdge {
+  node: CourseOwnership!
+}
+type CoursePackage {
+  description: String!
+  category: CoursePackageCategory!
+  _id: MId!
+  adminDescription: String!
+  name: String!
+  courses: [Course!]!
+  createdAt: Date!
+  brief: String!
+  priceSales: Int!
+  priceRegular: Int!
+}
+type FreeVideoEdge {
+  node: FreeVideo!
+}
+type TicketReasonCourse {
+  user: User!
+  course: Course!
+  kind: TicketReasonKind
+}
+type LectureApplicationEdge {
+  node: LectureApplication!
+}
+type AssignmentBoardPostPage {
+  edges: [AssignmentBoardPostEdge!]!
+  count: Int!
+}
+type Report {
+  _id: MId!
+  createdAt: Date!
+  author: User!
+  target: ReportTarget!
+  content: String!
+  adminDescription: String!
+}
+type FreeBoardEdge {
+  node: FreeBoard!
+}
+type ReviewBoardCommentPage {
+  edges: [ReviewBoardCommentEdge!]!
+  count: Int!
+}
+type PopupPage {
+  edges: [PopupEdge!]!
+  count: Int!
+}
+type AnnouncementPage {
+  edges: [AnnouncementEdge!]!
+  count: Int!
+}
+type CoursePackageEdge {
+  node: CoursePackage!
+}
+type BannerPage {
+  edges: [BannerEdge!]!
+  count: Int!
+}
+type CourseReview {
+  _id: MId!
+  createdAt: Date!
+  author: User!
+  course: Course!
+  content: String!
+  adminChecked: Boolean!
+  adminDescription: String!
+}
+type ReportTargetFreeBoardPost {
+  post: FreeBoardPost!
+  kind: ReportTargetKind
+}
+type CourseTagRel {
+  _id: MId!
+  createdAt: Date!
+  course: Course!
+  tag: CourseTag!
+}
+type FreeBoardCommentEdge {
+  node: FreeBoardComment!
+}
+type CourseOwnershipPage {
+  edges: [CourseOwnershipEdge!]!
+  count: Int!
+}
+type TicketCondition {
+  method: TicketMethod!
+  price: Int!
+  installmentMonths: Int!
+}
+type UserLessonRelEdge {
+  node: UserLessonRel!
+}
+type TicketReasonCoursePackage {
+  user: User!
+  coursePackage: CoursePackage!
+  kind: TicketReasonKind
+}
+type CourseKind {
+  _id: String!
+  createdAt: Date!
+  tags: [CourseTag!]!
+  categories: [CourseCategory!]!
+}
+type CoachScheduleKind {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  adminDescription: String!
+}
+type SpecialProductPurchaseLinkPage {
+  edges: [SpecialProductPurchaseLinkEdge!]!
+  count: Int!
+}
+type UserLessonRel {
+  _id: MId!
+  createdAt: Date!
+  user: User!
+  lesson: Lesson!
+  progress: Float!
+  lastWatchedAt: Date
+}
+type AssignmentBoardMemberPage {
+  edges: [AssignmentBoardMemberEdge!]!
+  count: Int!
+}
+type LectureApplicationPage {
+  edges: [LectureApplicationEdge!]!
+  count: Int!
+}
+type ReportTargetCourseReview {
+  courseReview: CourseReview!
+  kind: ReportTargetKind
+}
+type CoachSchedule {
+  _id: MId!
+  createdAt: Date!
+  owner: User!
+  customer: User
+  period: Period!
+  content: String!
+  adminDescription: String!
+}
+type AdminScheduleKindEdge {
+  node: AdminScheduleKind!
+}
+type CourseKindEdge {
+  node: CourseKind!
+}
+type CoachScheduleEdge {
+  node: CoachSchedule!
+}
+type AssignmentBoardCommentPage {
+  edges: [AssignmentBoardCommentEdge!]!
+  count: Int!
+}
+type RegularBoardPostPage {
+  edges: [RegularBoardPostEdge!]!
+  count: Int!
+}
+type ReviewBoardCategoryEdge {
+  node: ReviewBoardCategory!
+}
+type AssignmentBoardEdge {
+  node: AssignmentBoard!
+}
+type TogetherFreeVideoOwnershipEdge {
+  node: TogetherFreeVideoOwnership!
+}
+type UserGroup {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+}
+type FaqCategory {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  items: [Faq!]!
+  adminDescription: String!
+}
+type ReviewBoardPostPage {
+  edges: [ReviewBoardPostEdge!]!
+  count: Int!
+}
+type ReviewBoardCategory {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  boards: [ReviewBoard!]!
+  adminDescription: String!
+}
+type FaqPage {
+  edges: [FaqEdge!]!
+  count: Int!
+}
+type AdminSchedule {
+  _id: MId!
+  createdAt: Date!
+  period: Period!
+  content: String!
+  adminDescription: String!
+}
+type AssignmentBoardMemberEdge {
+  node: AssignmentBoardMember!
+}
+type ReportTargetRegularBoardPost {
+  post: RegularBoardPost!
+  kind: ReportTargetKind
+}
+type CourseReviewEdge {
+  node: CourseReview!
+}
+type ReviewBoard {
+  _id: MId!
+  createdAt: Date!
+  category: ReviewBoardCategory!
+  name: String!
+  content: String!
+  adminDescription: String!
+  requiredBadges: [Badge!]!
+}
+type LecturePage {
+  edges: [LectureEdge!]!
+  count: Int!
+}
+type UserTogetherFreeVideoRelEdge {
+  node: UserTogetherFreeVideoRel!
+}
+type MeetingRecord {
+  _id: MId!
+  createdAt: Date!
+  author: User!
+  customer: User!
+  startsAt: String!
+  content: String!
+  adminDescription: String!
+}
+type TogetherFreeVideoOwnership {
+  _id: MId!
+  createdAt: Date!
+  user: User!
+  togetherFreeVideo: TogetherFreeVideo!
+  expiresAt: Date!
+}
+type UserGroupEdge {
+  node: UserGroup!
+}
+type ReviewBoardPost {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  content: String!
+  isImportant: Boolean!
+  adminDescription: String!
+}
+type RegularBoardPostEdge {
+  node: RegularBoardPost!
+}
+type MeetingRecordEdge {
+  node: MeetingRecord!
+}
+type InquiryEdge {
+  node: Inquiry!
+}
+type LectureEdge {
+  node: Lecture!
+}
+type UserAuth {
+  token: String!
+  user: User!
+}
+type CourseKindPage {
+  edges: [CourseKindEdge!]!
+  count: Int!
+}
+type FreeBoardPostPage {
+  edges: [FreeBoardPostEdge!]!
+  count: Int!
+}
+type CoursePackageCategoryPage {
+  edges: [CoursePackageCategoryEdge!]!
+  count: Int!
+}
+type Ticket {
+  tossPaymentKey: String
+  _id: MId!
+  adminDescription: String!
+  tossPaymentValidationError: Unknown
+  createdAt: Date!
+  reason: TicketReason
+  status: TicketStatus!
+  condition: TicketCondition!
+  user: User!
+}
+type ReviewBoardPostEdge {
+  node: ReviewBoardPost!
+}
+type CourseCategory {
+  _id: MId!
+  createdAt: Date!
+  kind: CourseKind!
+  name: String!
+  adminDescription: String!
+}
+type CourseEdge {
+  node: Course!
+}
+type TogetherFreeVideoOwnershipPage {
+  edges: [TogetherFreeVideoOwnershipEdge!]!
+  count: Int!
+}
+type ReferrerLink {
+  _id: MId!
+  createdAt: Date!
+  owner: User!
+  name: String!
+  url: String!
+  adminDescription: String!
+}
+type User {
+  _id: MId!
+  adminDescription: String!
+  email: String!
+  referrerCode: String!
+  typeOfBusiness: String!
+  group: UserGroup
+  phone: String!
+  coachExpiresAt: Date!
+  name: String!
+  nickname: String!
+  createdAt: Date!
+  coach: User
+  studentId: String!
+  loginDenied: Boolean!
+  togetherFreeVideoTicketCount: Int!
+  isCoach: Boolean!
+  coachChecked: Boolean!
+}
+type ReportTargetRegularBoardComment {
+  comment: RegularBoardComment!
+  kind: ReportTargetKind
+}
+type FreeBoardPost {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  content: String!
+  isImportant: Boolean!
+  adminDescription: String!
+}
+type FaqEdge {
+  node: Faq!
+}
+type TicketReasonLecture {
+  user: User!
+  lecture: Lecture!
+  kind: TicketReasonKind
+}
+type InquiryKind {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  adminDescription: String!
+}
+type CourseCategoryEdge {
+  node: CourseCategory!
+}
+type CourseTagRelEdge {
+  node: CourseTagRel!
+}
+type AssignmentBoardPost {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  content: String!
+  isImportant: Boolean!
+  adminDescription: String!
+}
+type CourseOwnership {
+  _id: MId!
+  createdAt: Date!
+  user: User!
+  course: Course!
+  expiresAt: Date!
+  adminDescription: String!
+}
+type RegularBoardCategory {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  boards: [RegularBoard!]!
+  adminDescription: String!
+}
+type CoursePage {
+  edges: [CourseEdge!]!
+  count: Int!
+}
+type TicketReasonSpecialProduct {
+  user: User!
+  specialProduct: SpecialProduct!
+  specialProductPurchase: SpecialProductPurchase!
+  specialProductPurchaseLink: SpecialProductPurchaseLink!
+  kind: TicketReasonKind
+}
+type BadgeEdge {
+  node: Badge!
+}
+type Course {
+  description: String!
+  tags: [CourseTag!]!
+  _id: MId!
+  adminDescription: String!
+  name: String!
+  attachments: [File!]!
+  orientation: File
+  createdAt: Date!
+  categories: [CourseCategory!]!
+  brief: String!
+  image: File!
+  priceSales: Int!
+  lessons: [Lesson!]!
+  priceRegular: Int!
+}
+type AssignmentBoardCategory {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  boards: [AssignmentBoard!]!
+  adminDescription: String!
+}
+type BannerEdge {
+  node: Banner!
+}
+type RegularBoardComment {
+  _id: MId!
+  adminDescription: String!
+  content: String!
+  replyOf: RegularBoardComment!
+  createdAt: Date!
+  author: User!
+  post: RegularBoardPost!
+}
+type TicketPage {
+  edges: [TicketEdge!]!
+  count: Int!
+}
+type AdminScheduleKindPage {
+  edges: [AdminScheduleKindEdge!]!
+  count: Int!
+}
+type CourseTagPage {
+  edges: [CourseTagEdge!]!
+  count: Int!
+}
+type TicketEdge {
+  node: Ticket!
+}
+type SpecialProductPage {
+  edges: [SpecialProductEdge!]!
+  count: Int!
+}
+type AnnouncementEdge {
+  node: Announcement!
+}
+type ReportTargetAssignmentBoardPost {
+  post: AssignmentBoardPost!
+  kind: ReportTargetKind
+}
+type ReportTargetAssignmentBoardComment {
+  comment: AssignmentBoardComment!
+  kind: ReportTargetKind
+}
+type FreeVideo {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  content: File!
+  adminDescription: String!
+}
+type UserLessonRelPage {
+  edges: [UserLessonRelEdge!]!
+  count: Int!
+}
+type CoachSchedulePage {
+  edges: [CoachScheduleEdge!]!
+  count: Int!
+}
+type AssignmentBoardCommentEdge {
+  node: AssignmentBoardComment!
+}
+type UserGroupPage {
+  edges: [UserGroupEdge!]!
+  count: Int!
+}
+type AdminScheduleEdge {
+  node: AdminSchedule!
+}
+type FreeBoard {
+  _id: MId!
+  createdAt: Date!
+  category: FreeBoardCategory!
+  name: String!
+  content: String!
+  adminDescription: String!
+  requiredBadges: [Badge!]!
+}
+type RegularBoardPage {
+  edges: [RegularBoardEdge!]!
+  count: Int!
+}
+type FreeBoardCommentPage {
+  edges: [FreeBoardCommentEdge!]!
+  count: Int!
+}
+type ReviewBoardCommentEdge {
+  node: ReviewBoardComment!
+}
+type AssignmentBoard {
+  _id: MId!
+  createdAt: Date!
+  category: AssignmentBoardCategory!
+  name: String!
+  content: String!
+  adminDescription: String!
+}
+type UserPage {
+  edges: [UserEdge!]!
+  count: Int!
+}
+type Lecture {
+  description: String!
+  _id: MId!
+  adminDescription: String!
+  capacity: Int!
+  name: String!
+  createdAt: Date!
+  brief: String!
+  priceSales: Int!
+  period: Period!
+  applicationEndsAt: Date!
+  priceRegular: Int!
+}
+type CourseTagEdge {
+  node: CourseTag!
+}
+type FreeBoardCategoryPage {
+  edges: [FreeBoardCategoryEdge!]!
+  count: Int!
+}
+type RegularBoardEdge {
+  node: RegularBoard!
+}
+type Popup {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  imagePc: File!
+  imageMobile: File!
+  url: String!
+  adminDescription: String!
+}
+type UserBadgeRel {
+  _id: MId!
+  createdAt: Date!
+  user: User!
+  badge: Badge!
+}
+type SpecialProduct {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  priceSales: Int!
+  adminDescription: String!
+}
+type LessonEdge {
+  node: Lesson!
+}
+type CoursePackageCategory {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  adminDescription: String!
+}
+type MeetingRecordPage {
+  edges: [MeetingRecordEdge!]!
+  count: Int!
+}
+type CourseTag {
+  _id: MId!
+  createdAt: Date!
+  kind: CourseKind!
+  name: String!
+  adminDescription: String!
+}
+type ReportTargetFreeBoardComment {
+  comment: FreeBoardComment!
+  kind: ReportTargetKind
+}
+type Announcement {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  content: String!
+  adminDescription: String!
+}
+type ReportEdge {
+  node: Report!
+}
+type RegularBoardCategoryPage {
+  edges: [RegularBoardCategoryEdge!]!
+  count: Int!
+}
+type AdminScheduleKind {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  adminDescription: String!
+}
+type RegularBoardCommentEdge {
+  node: RegularBoardComment!
+}
+type UserBadgeRelPage {
+  edges: [UserBadgeRelEdge!]!
+  count: Int!
+}
+type CourseCategoryPage {
+  edges: [CourseCategoryEdge!]!
+  count: Int!
+}
+type LessonPage {
+  edges: [LessonEdge!]!
+  count: Int!
+}
+type CoachScheduleKindEdge {
+  node: CoachScheduleKind!
+}
+type ReviewBoardCategoryPage {
+  edges: [ReviewBoardCategoryEdge!]!
+  count: Int!
+}
+type Faq {
+  _id: MId!
+  createdAt: Date!
+  question: String!
+  answer: String!
+  adminDescription: String!
+}
+type UserTogetherFreeVideoRel {
+  _id: MId!
+  createdAt: Date!
+  user: User!
+  togetherFreeVideo: TogetherFreeVideo!
+  progress: Float!
+  lastWatchedAt: Date
+}
+type FreeBoardCategory {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  boards: [FreeBoard!]!
+  adminDescription: String!
+}
+type AssignmentBoardCategoryEdge {
+  node: AssignmentBoardCategory!
+}
+type ReportTargetReviewBoardPost {
+  post: ReviewBoardPost!
+  kind: ReportTargetKind
+}
+type UserEdge {
+  node: User!
+}
+type SpecialProductPurchasePage {
+  edges: [SpecialProductPurchaseEdge!]!
+  count: Int!
+}
+type SpecialProductPurchaseEdge {
+  node: SpecialProductPurchase!
+}
+type UserBadgeRelEdge {
+  node: UserBadgeRel!
+}
+type ReviewBoardComment {
+  _id: MId!
+  adminDescription: String!
+  content: String!
+  replyOf: ReviewBoardComment!
+  createdAt: Date!
+  author: User!
+  post: ReviewBoardPost!
+}
+type CoursePackagePage {
+  edges: [CoursePackageEdge!]!
+  count: Int!
+}
+type RegularBoardPost {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  content: String!
+  isImportant: Boolean!
+  adminDescription: String!
+}
+type CoachScheduleKindPage {
+  edges: [CoachScheduleKindEdge!]!
+  count: Int!
+}
+type FaqCategoryPage {
+  edges: [FaqCategoryEdge!]!
+  count: Int!
+}
+type FreeBoardPage {
+  edges: [FreeBoardEdge!]!
+  count: Int!
+}
+type CoursePackageCategoryEdge {
+  node: CoursePackageCategory!
+}
+type ReviewBoardEdge {
+  node: ReviewBoard!
+}
+type FreeBoardCategoryEdge {
+  node: FreeBoardCategory!
+}
+type TogetherFreeVideo {
+  _id: MId!
+  createdAt: Date!
+  name: String!
+  content: KollusVideo!
+  adminDescription: String!
+}
+input TicketConditionInput {
+  method: TicketMethod!
+  price: Int!
+  installmentMonths: Int!
+}
+input PageOptions {
+  skip: Int!
+  limit: Int!
+}
+union TicketReason =
+    TicketReasonCourse
+  | TicketReasonCoursePackage
+  | TicketReasonLecture
+  | TicketReasonSpecialProduct
+union ReportTarget =
+    ReportTargetCourseReview
+  | ReportTargetFreeBoardPost
+  | ReportTargetFreeBoardComment
+  | ReportTargetRegularBoardPost
+  | ReportTargetRegularBoardComment
+  | ReportTargetReviewBoardPost
+  | ReportTargetReviewBoardComment
+  | ReportTargetAssignmentBoardPost
+  | ReportTargetAssignmentBoardComment

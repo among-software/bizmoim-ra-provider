@@ -1,42 +1,50 @@
 const Lodash = require("lodash");
+const { gql } = require("@apollo/client/core");
+const { fragments } = require("./fragments");
 
-const fragments = require("./fragments.graphql");
+const createEndponitNameReadOne = (typeName) =>
+  Lodash.camelCase(typeName + " read one");
+const createEndponitNameReadMany = (typeName) =>
+  Lodash.camelCase(typeName + " read many");
+const createEndponitNameReadPage = (typeName) =>
+  Lodash.camelCase(typeName + " read page");
 
 const createQueryReadOne = (typeName) => {
-  return (
-    fragments +
-    `query a($filter: Filter) {
-    ${Lodash.camelCase(typeName + "read one")}(
+  return gql`
+  query Query($filter: Filter) {
+    ${createEndponitNameReadOne(typeName)}(
       nullable: false
       filter: $filter
-    ) { ...t_${typeName} }
-  }`
-  );
+    ) { ...f_${typeName} }
+  }`;
 };
 
 const createQueryReadMany = (typeName) => {
-  return (
-    fragments +
-    `query a($filter: Filter, $sort: Sort) {
-    ${Lodash.camelCase(typeName + "read many")}(
-      filter: $filter
-      sort: $sort
-      ) { ...t_${typeName} }
-  }`
-  );
+  return gql`
+    query a($filter: Filter, $sort: Sort) {
+    ${createEndponitNameReadMany(typeName)}(
+        filter: $filter
+        sort: $sort
+      ) { ...f_${typeName} }
+    }`;
 };
 
 const createQueryReadPage = (typeName) => {
-  return (
-    fragments +
-    `query a($filter: Filter, $sort: Sort, $pageOptions PageOptions) {
-    ${Lodash.camelCase(typeName + "read page")}(
+  return gql`
+    query a($filter: Filter, $sort: Sort, $pageOptions: PageOptions) {
+    ${createEndponitNameReadPage(typeName)}(
       filter: $filter
       sort: $sort
       pageOptions: $pageOptions
-      ) { ...t_${typeName} }
-  }`
-  );
+      ) { 
+        count
+        edges {
+          node {
+            ...f_${typeName}
+          }
+        }
+      }
+    }`;
 };
 
 const createLoader = async ({ apolloClient }) => {
@@ -49,7 +57,7 @@ const createLoader = async ({ apolloClient }) => {
         pageOptions,
       },
     });
-    return result.data.a;
+    return result.data[createEndponitNameReadPage(resource)];
   };
 
   const readOne = async (resource, id) => {
@@ -59,19 +67,25 @@ const createLoader = async ({ apolloClient }) => {
         filter: { _id: { $oid: id } },
       },
     });
-    return result.data.a;
+    return result.data[createEndponitNameReadOne(resource)];
   };
 
   const readManyOrderedId = async (resource, ids) => {
     const result = await apolloClient.query({
       query: createQueryReadMany(resource),
       variables: {
-        filter: { $or: ids.map((a) => ({ $oid: a })) },
+        filter: { $or: ids.map((a) => ({ _id: { $oid: a } })) },
       },
     });
-    const objectDict = new Map(result.data.a.map((a) => [a._id.$oid, a]));
-    const objs = ids.map((oid) => {
-      const id = oid.$oid;
+
+    const objectDict = new Map(
+      result.data[createEndponitNameReadMany(resource)].map((a) => [
+        a._id.$oid,
+        a,
+      ])
+    );
+    const objs = ids.map((strid) => {
+      const id = strid;
       const doc = objectDict.get(id);
       if (doc == null) {
         throw new Error("Cannot find doc");
@@ -85,7 +99,8 @@ const createLoader = async ({ apolloClient }) => {
     readOne,
     readPage,
     readManyOrderedId,
+    fragments,
   };
 };
 
-exports.loader = createLoader;
+exports.createLoader = createLoader;
