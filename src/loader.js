@@ -1,7 +1,6 @@
-const fs = require("fs");
 const Lodash = require("lodash");
 
-const fragments = fs.readFileSync("./src/fragments.graphql");
+const fragments = require("./src/fragments.graphql");
 
 const createQueryReadOne = (typeName) => {
   return (
