@@ -1,4 +1,5 @@
-const { createLoader } = require("./loader");
+// const { createLoader } = require("./loader");
+import { createLoader } from "./loader";
 
 class NotImplementedError extends Error {
   constructor() {
@@ -97,6 +98,8 @@ const createDataProvider = async ({ apolloClient }) => {
   return dataProvider;
 };
 
-module.exports.createDataProvider = createDataProvider;
-module.exports.fragments = require("./fragments").fragments;
-module.exports.fragmentsMetadata = require("./fragments").fragmentsMetadata;
+export * from "./fragments";
+export { createDataProvider };
+// module.exports.createDataProvider = createDataProvider;
+// module.exports.fragments = require("./fragments").fragments;
+// module.exports.fragmentsMetadata = require("./fragments").fragmentsMetadata;

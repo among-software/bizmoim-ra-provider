@@ -1,6 +1,10 @@
-const Lodash = require("lodash");
-const { gql } = require("@apollo/client/core");
-const { fragments } = require("./fragments");
+// const Lodash = require("lodash");
+// const { gql } = require("@apollo/client/core");
+// const { fragments } = require("./fragments");
+
+import * as Lodash from "lodash";
+import { gql } from "@apollo/client";
+import { fragments } from "./fragments";
 
 const createEndponitNameReadOne = (typeName) =>
   Lodash.camelCase(typeName + " read one");
@@ -47,7 +51,7 @@ const createQueryReadPage = (typeName) => {
     }`;
 };
 
-const createLoader = async ({ apolloClient }) => {
+export const createLoader = async ({ apolloClient }) => {
   const readPage = async (resource, { filter, sort, pageOptions }) => {
     const result = await apolloClient.query({
       query: createQueryReadPage(resource),
@@ -102,5 +106,3 @@ const createLoader = async ({ apolloClient }) => {
     fragments,
   };
 };
-
-exports.createLoader = createLoader;

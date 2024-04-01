@@ -1,5 +1,5 @@
 const { ApolloClient, InMemoryCache, gql } = require("@apollo/client/core");
-const { createFragmentRegistry } = require("@apollo/client/cache");
+const { createFragmentRegistry } = require("@apollo/client/core/cache");
 const biz = require("bizmoim-ra-provider");
 
 const main = async () => {
