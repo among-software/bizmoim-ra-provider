@@ -1,4 +1,4 @@
-const fs = reuqire("fs");
+const fs = require("fs");
 const Lodash = require("lodash");
 
 const fragments = fs.readFileSync("./src/fragments.graphql");
