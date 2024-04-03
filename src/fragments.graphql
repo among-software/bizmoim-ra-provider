@@ -72,6 +72,7 @@ fragment f_UserGroup on UserGroup {
   _id
   createdAt
   name
+  adminDescription
 }
 fragment f_InquiryKind on InquiryKind {
   _id
@@ -151,11 +152,6 @@ fragment f_UserTogetherFreeVideoRel on UserTogetherFreeVideoRel {
 }
 fragment f_ReviewBoardComment on ReviewBoardComment {
   _id
-  adminDescription
-  content
-  replyOf {
-    _id
-  }
   createdAt
   author {
     _id
@@ -163,10 +159,18 @@ fragment f_ReviewBoardComment on ReviewBoardComment {
   post {
     _id
   }
+  replyOf {
+    _id
+  }
+  content
+  adminDescription
 }
 fragment f_RegularBoardPost on RegularBoardPost {
   _id
   createdAt
+  board {
+    _id
+  }
   name
   content
   isImportant
@@ -224,6 +228,9 @@ fragment f_Inquiry on Inquiry {
   author {
     _id
   }
+  kind {
+    _id
+  }
   salesMethod
 }
 fragment f_SpecialProductPurchaseLink on SpecialProductPurchaseLink {
@@ -261,11 +268,6 @@ fragment f_Lesson on Lesson {
 }
 fragment f_FreeBoardComment on FreeBoardComment {
   _id
-  adminDescription
-  content
-  replyOf {
-    _id
-  }
   createdAt
   author {
     _id
@@ -273,14 +275,14 @@ fragment f_FreeBoardComment on FreeBoardComment {
   post {
     _id
   }
+  replyOf {
+    _id
+  }
+  content
+  adminDescription
 }
 fragment f_AssignmentBoardComment on AssignmentBoardComment {
   _id
-  adminDescription
-  content
-  replyOf {
-    _id
-  }
   createdAt
   author {
     _id
@@ -288,6 +290,11 @@ fragment f_AssignmentBoardComment on AssignmentBoardComment {
   post {
     _id
   }
+  replyOf {
+    _id
+  }
+  content
+  adminDescription
 }
 fragment f_RegularBoard on RegularBoard {
   _id
@@ -315,6 +322,7 @@ fragment f_CoursePackage on CoursePackage {
   }
   createdAt
   brief
+  image
   priceSales
   priceRegular
 }
@@ -431,6 +439,9 @@ fragment f_CourseKind on CourseKind {
 fragment f_CoachSchedule on CoachSchedule {
   _id
   createdAt
+  kind {
+    _id
+  }
   owner {
     _id
   }
@@ -444,6 +455,9 @@ fragment f_CoachSchedule on CoachSchedule {
 fragment f_AdminSchedule on AdminSchedule {
   _id
   createdAt
+  kind {
+    _id
+  }
   period
   content
   adminDescription
@@ -477,6 +491,9 @@ fragment f_ReviewBoard on ReviewBoard {
 fragment f_ReviewBoardPost on ReviewBoardPost {
   _id
   createdAt
+  board {
+    _id
+  }
   name
   content
   isImportant
@@ -598,6 +615,9 @@ fragment f_User on User {
 fragment f_AssignmentBoardPost on AssignmentBoardPost {
   _id
   createdAt
+  board {
+    _id
+  }
   name
   content
   isImportant
@@ -606,6 +626,9 @@ fragment f_AssignmentBoardPost on AssignmentBoardPost {
 fragment f_FreeBoardPost on FreeBoardPost {
   _id
   createdAt
+  board {
+    _id
+  }
   name
   content
   isImportant
@@ -613,6 +636,9 @@ fragment f_FreeBoardPost on FreeBoardPost {
 }
 fragment f_Course on Course {
   description
+  category {
+    _id
+  }
   tags {
     _id
   }
@@ -622,9 +648,6 @@ fragment f_Course on Course {
   attachments
   orientation
   createdAt
-  categories {
-    _id
-  }
   brief
   image
   priceSales
@@ -635,11 +658,6 @@ fragment f_Course on Course {
 }
 fragment f_RegularBoardComment on RegularBoardComment {
   _id
-  adminDescription
-  content
-  replyOf {
-    _id
-  }
   createdAt
   author {
     _id
@@ -647,6 +665,11 @@ fragment f_RegularBoardComment on RegularBoardComment {
   post {
     _id
   }
+  replyOf {
+    _id
+  }
+  content
+  adminDescription
 }
 fragment f_CourseOwnership on CourseOwnership {
   _id
@@ -688,9 +711,11 @@ fragment f_Lecture on Lecture {
   name
   createdAt
   brief
+  image
   priceSales
   period
   applicationEndsAt
+  location
   priceRegular
 }
 fragment f_AssignmentBoard on AssignmentBoard {

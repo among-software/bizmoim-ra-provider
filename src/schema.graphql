@@ -2,9 +2,10 @@ scalar Filter
 scalar KollusVideo
 scalar Sort
 scalar MId
-scalar Unknown
 scalar File
+scalar Unknown
 scalar Period
+scalar PhoneToken
 scalar Date
 enum ReportTargetKind {
   COURSE_REVIEW
@@ -138,6 +139,7 @@ type Inquiry {
   adminChecked: Boolean!
   careerPeriod: String!
   author: User
+  kind: InquiryKind!
   salesMethod: String!
 }
 type InquiryKindPage {
@@ -158,12 +160,12 @@ type AdminAuth {
 }
 type FreeBoardComment {
   _id: MId!
-  adminDescription: String!
-  content: String!
-  replyOf: FreeBoardComment!
   createdAt: Date!
   author: User!
   post: FreeBoardPost!
+  replyOf: FreeBoardComment!
+  content: String!
+  adminDescription: String!
 }
 type FreeBoardPostEdge {
   node: FreeBoardPost!
@@ -246,11 +248,11 @@ type Mutation {
     adminDescription: String
   ): CourseReview!
   announcementDelete(_id: MId!): Announcement!
+  inquiryKindDelete(_id: MId!): InquiryKind!
   userGroupCreate(name: String!, adminDescription: String!): UserGroup!
   badgeMoveDown(_id: MId!): String
   ticketCreate(user: MId!, condition: TicketConditionInput!): Ticket!
   allocateCoach(user: MId!, coach: MId!): String
-  userGroupMoveUp(_id: MId!): String
   coachScheduleCreate(
     kind: MId!
     owner: MId!
@@ -265,6 +267,7 @@ type Mutation {
     adminDescription: String
   ): CoursePackageCategory!
   deallocateCoach(user: MId!): String
+  smsVerifVerify(phone: String!, verifCode: String!): PhoneToken!
   bannerMoveUp(_id: MId!): String
   courseTagCreate(
     kind: String!
@@ -274,8 +277,8 @@ type Mutation {
   userUpdateBySelf(
     id: MId!
     name: String
-    phone: String
-    smsVerifCode: String
+    nickname: String
+    phone: PhoneToken
     email: String
     password: String
   ): User!
@@ -285,7 +288,7 @@ type Mutation {
     content: String!
     adminDescription: String!
   ): Announcement!
-  userLogin(phone: String!, password: String!): UserAuth
+  userLogin(phone: String!, password: String!): UserAuth!
   coursePackageCategoryCreate(
     name: String!
     adminDescription: String!
@@ -307,13 +310,12 @@ type Mutation {
   userCreateAccount(
     name: String!
     nickname: String!
-    phone: String!
-    smsVerifCode: String!
+    phone: PhoneToken!
     email: String!
     password: String!
     referrerCode: String!
-    referrerLink: String!
-  ): UserAuth
+    referrerLink: String
+  ): UserAuth!
   bannerMoveDown(_id: MId!): String
   inquiryDelete(_id: MId!): Inquiry!
   userBadgeRelCreate(user: MId!, badge: MId!): UserBadgeRel!
@@ -327,11 +329,12 @@ type Mutation {
     phone: String
     coachExpiresAt: Date
     name: String
+    nickname: String
     studentId: String
     loginDenied: Boolean
     id: MId!
     togetherFreeVideoTicketCount: Int
-    isCoach: String
+    isCoach: Boolean
     coachChecked: Boolean
   ): User!
   courseOwnershipPurchase(
@@ -352,8 +355,10 @@ type Mutation {
     name: String
     imagePc: File
     imageMobile: File
+    url: String
     adminDescription: String
   ): Popup!
+  smsVerifSend(phone: String!): String
   lectureApplicationCreate(
     lecture: MId!
     user: MId
@@ -381,6 +386,7 @@ type Mutation {
     author: MId!
     content: String!
   ): CourseReview!
+  inquiryKindCreate(name: String!, adminDescription: String!): InquiryKind!
   badgeMoveUp(_id: MId!): String
   courseReviewUpdateBySelf(_id: MId!, content: String): CourseReview!
   courseTagUpdate(
@@ -393,6 +399,7 @@ type Mutation {
     name: String!
     imagePc: File!
     imageMobile: File!
+    url: String!
     adminDescription: String!
   ): Banner!
   referrerLinkCreate(
@@ -408,6 +415,7 @@ type Mutation {
     content: String
     adminDescription: String
   ): Announcement!
+  sendSmsCoach(targets: [MId!]!): String
   lectureDelete(_id: MId!): Lecture!
   lessonDelete(_id: MId!): Lesson!
   lessonMoveUp(_id: MId!): String
@@ -423,12 +431,13 @@ type Mutation {
     name: String
     imagePc: File
     imageMobile: File
+    url: String
     adminDescription: String
   ): Banner!
   courseReviewDeleteByAdmin(_id: MId!): CourseReview!
   courseTagRelCreate(course: MId!, tag: MId!): CourseTagRel!
   inquiryCreate(
-    user: MId
+    author: MId
     kind: MId!
     name: String!
     phone: String!
@@ -444,6 +453,8 @@ type Mutation {
     adminDescription: String!
   ): CourseCategory!
   courseCategoryMoveUp(_id: MId!): String
+  sendSmsAdmin(targets: [MId!]!): String
+  userVerifyToken(token: String!): UserAuth!
   lectureApplicationUpdate(
     _id: MId!
     adminDescription: String!
@@ -469,8 +480,21 @@ type Mutation {
     priceSales: Int!
     priceRegular: Int!
   ): Course!
-  userGroupMoveDown(_id: MId!): String
   popupDelete(_id: MId!): Popup!
+  userCreate(
+    adminDescription: String!
+    email: String!
+    typeOfBusiness: String!
+    group: MId
+    phone: String!
+    coachExpiresAt: Date!
+    name: String!
+    nickname: String!
+    studentId: String!
+    loginDenied: Boolean!
+    togetherFreeVideoTicketCount: Int!
+    isCoach: Boolean!
+  ): User!
   courseTagRelDelete(_id: MId!): CourseTagRel!
   courseTagDelete(_id: MId!): CourseTag!
   meetingRecordCreate(
@@ -485,8 +509,8 @@ type Mutation {
     description: String!
     category: MId!
     adminDescription: String!
+    name: String!
     courses: [MId!]!
-    title: String!
     brief: String!
     image: File!
     priceSales: Int!
@@ -503,7 +527,7 @@ type Mutation {
     description: String!
     adminDescription: String!
     capacity: Int!
-    title: String!
+    name: String!
     brief: String!
     image: File!
     priceSales: Int!
@@ -530,7 +554,7 @@ type Mutation {
     adminDescription: String
   ): AdminSchedule!
   courseCategoryMoveDown(_id: MId!): String
-  adminVerifyToken(token: String!): AdminAuth
+  adminVerifyToken(token: String!): AdminAuth!
   referrerLinkUpdate(
     _id: MId!
     name: String!
@@ -555,6 +579,11 @@ type Mutation {
     content: File
     adminDescription: String
   ): FreeVideo!
+  inquiryKindUpdate(
+    _id: MId!
+    name: String
+    adminDescription: String
+  ): InquiryKind!
   popupMoveDown(_id: MId!): String
   userGetTogetherFreeVideoTicketForFree(user: MId!): String
   userLeave(id: MId!, reason: String!): String
@@ -562,6 +591,7 @@ type Mutation {
     name: String!
     imagePc: File!
     imageMobile: File!
+    url: String!
     adminDescription: String!
   ): Popup!
   courseOwnershipCreate(
@@ -583,8 +613,8 @@ type Mutation {
   badgeCreate(name: String!, color: String!): Badge!
   badgeUpdate(_id: MId!, name: String, color: String): Badge!
   togetherFreeVideoDelete(_id: MId!): TogetherFreeVideo!
-  coursePackagePurchase(package: MId!, user: MId!, tiket: MId!): String
-  adminLogin(id: String!, password: String!): AdminAuth
+  coursePackagePurchase(package: MId!, user: MId!, ticket: MId!): String
+  adminLogin(id: String!, password: String!): AdminAuth!
 }
 type SpecialProductPurchaseLinkEdge {
   node: SpecialProductPurchaseLink!
@@ -595,12 +625,12 @@ type BadgePage {
 }
 type AssignmentBoardComment {
   _id: MId!
-  adminDescription: String!
-  content: String!
-  replyOf: AssignmentBoardComment!
   createdAt: Date!
   author: User!
   post: AssignmentBoardPost!
+  replyOf: AssignmentBoardComment!
+  content: String!
+  adminDescription: String!
 }
 type RegularBoard {
   _id: MId!
@@ -638,6 +668,7 @@ type CoursePackage {
   courses: [Course!]!
   createdAt: Date!
   brief: String!
+  image: File!
   priceSales: Int!
   priceRegular: Int!
 }
@@ -764,6 +795,7 @@ type ReportTargetCourseReview {
 type CoachSchedule {
   _id: MId!
   createdAt: Date!
+  kind: CoachScheduleKind!
   owner: User!
   customer: User
   period: Period!
@@ -800,6 +832,7 @@ type UserGroup {
   _id: MId!
   createdAt: Date!
   name: String!
+  adminDescription: String!
 }
 type FaqCategory {
   _id: MId!
@@ -826,6 +859,7 @@ type FaqPage {
 type AdminSchedule {
   _id: MId!
   createdAt: Date!
+  kind: AdminScheduleKind!
   period: Period!
   content: String!
   adminDescription: String!
@@ -878,6 +912,7 @@ type UserGroupEdge {
 type ReviewBoardPost {
   _id: MId!
   createdAt: Date!
+  board: ReviewBoard!
   name: String!
   content: String!
   isImportant: Boolean!
@@ -973,6 +1008,7 @@ type ReportTargetRegularBoardComment {
 type FreeBoardPost {
   _id: MId!
   createdAt: Date!
+  board: FreeBoard!
   name: String!
   content: String!
   isImportant: Boolean!
@@ -1001,6 +1037,7 @@ type CourseTagRelEdge {
 type AssignmentBoardPost {
   _id: MId!
   createdAt: Date!
+  board: AssignmentBoard!
   name: String!
   content: String!
   isImportant: Boolean!
@@ -1037,6 +1074,7 @@ type BadgeEdge {
 }
 type Course {
   description: String!
+  category: CourseCategory!
   tags: [CourseTag!]!
   _id: MId!
   adminDescription: String!
@@ -1044,7 +1082,6 @@ type Course {
   attachments: [File!]!
   orientation: File
   createdAt: Date!
-  categories: [CourseCategory!]!
   brief: String!
   image: File!
   priceSales: Int!
@@ -1063,12 +1100,12 @@ type BannerEdge {
 }
 type RegularBoardComment {
   _id: MId!
-  adminDescription: String!
-  content: String!
-  replyOf: RegularBoardComment!
   createdAt: Date!
   author: User!
   post: RegularBoardPost!
+  replyOf: RegularBoardComment!
+  content: String!
+  adminDescription: String!
 }
 type TicketPage {
   edges: [TicketEdge!]!
@@ -1125,6 +1162,470 @@ type UserGroupPage {
 type AdminScheduleEdge {
   node: AdminSchedule!
 }
+type Query {
+  coursePackageReadMany(filter: Filter, sort: Sort): [CoursePackage!]!
+  assignmentBoardPostReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): AssignmentBoardPostPage!
+  courseCategoryReadMany(filter: Filter, sort: Sort): [CourseCategory!]!
+  freeBoardCommentReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): FreeBoardCommentPage!
+  coursePackageCategoryReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): CoursePackageCategory
+  regularBoardCategoryReadMany(
+    filter: Filter
+    sort: Sort
+  ): [RegularBoardCategory!]!
+  assignmentBoardPostReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): AssignmentBoardPost
+  assignmentBoardPostReadMany(
+    filter: Filter
+    sort: Sort
+  ): [AssignmentBoardPost!]!
+  meetingRecordReadMany(filter: Filter, sort: Sort): [MeetingRecord!]!
+  regularBoardPostReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): RegularBoardPostPage!
+  coachScheduleKindReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): CoachScheduleKindPage!
+  specialProductReadOne(filter: Filter, nullable: Boolean): SpecialProduct
+  freeBoardCategoryReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): FreeBoardCategoryPage!
+  lectureReadOne(filter: Filter, nullable: Boolean): Lecture
+  courseReadOne(filter: Filter, nullable: Boolean): Course
+  specialProductPurchaseLinkReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): SpecialProductPurchaseLink
+  userReadPage(filter: Filter, sort: Sort, pageOptions: PageOptions!): UserPage!
+  userBadgeRelReadOne(filter: Filter, nullable: Boolean): UserBadgeRel
+  adminScheduleKindReadOne(filter: Filter, nullable: Boolean): AdminScheduleKind
+  userGroupReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): UserGroupPage!
+  announcementReadOne(filter: Filter, nullable: Boolean): Announcement
+  courseOwnershipReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): CourseOwnershipPage!
+  userTogetherFreeVideoRelReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): UserTogetherFreeVideoRelPage!
+  courseKindReadMany(filter: Filter, sort: Sort): [CourseKind!]!
+  courseKindReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): CourseKindPage!
+  popupReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): PopupPage!
+  lectureApplicationReadMany(filter: Filter, sort: Sort): [LectureApplication!]!
+  regularBoardCommentReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): RegularBoardComment
+  reportReadOne(filter: Filter, nullable: Boolean): Report
+  adminScheduleReadOne(filter: Filter, nullable: Boolean): AdminSchedule
+  lectureReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): LecturePage!
+  popupReadMany(filter: Filter, sort: Sort): [Popup!]!
+  regularBoardCommentReadMany(
+    filter: Filter
+    sort: Sort
+  ): [RegularBoardComment!]!
+  courseReviewReadMany(filter: Filter, sort: Sort): [CourseReview!]!
+  regularBoardCategoryReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): RegularBoardCategory
+  adminScheduleKindReadMany(filter: Filter, sort: Sort): [AdminScheduleKind!]!
+  inquiryKindReadMany(filter: Filter, sort: Sort): [InquiryKind!]!
+  specialProductPurchaseReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): SpecialProductPurchase
+  freeVideoReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): FreeVideoPage!
+  regularBoardCommentReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): RegularBoardCommentPage!
+  freeBoardCategoryReadMany(filter: Filter, sort: Sort): [FreeBoardCategory!]!
+  assignmentBoardCategoryReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): AssignmentBoardCategoryPage!
+  togetherFreeVideoOwnershipReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): TogetherFreeVideoOwnership
+  reviewBoardCategoryReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): ReviewBoardCategoryPage!
+  reviewBoardCommentReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): ReviewBoardComment
+  freeBoardCommentReadMany(filter: Filter, sort: Sort): [FreeBoardComment!]!
+  assignmentBoardReadMany(filter: Filter, sort: Sort): [AssignmentBoard!]!
+  reportReadMany(filter: Filter, sort: Sort): [Report!]!
+  assignmentBoardMemberReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): AssignmentBoardMember
+  reviewBoardPostReadOne(filter: Filter, nullable: Boolean): ReviewBoardPost
+  freeVideoReadMany(filter: Filter, sort: Sort): [FreeVideo!]!
+  coachScheduleKindReadOne(filter: Filter, nullable: Boolean): CoachScheduleKind
+  reviewBoardReadMany(filter: Filter, sort: Sort): [ReviewBoard!]!
+  coachScheduleKindReadMany(filter: Filter, sort: Sort): [CoachScheduleKind!]!
+  regularBoardReadMany(filter: Filter, sort: Sort): [RegularBoard!]!
+  userGroupReadOne(filter: Filter, nullable: Boolean): UserGroup
+  freeBoardCategoryReadOne(filter: Filter, nullable: Boolean): FreeBoardCategory
+  assignmentBoardCategoryReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): AssignmentBoardCategory
+  coursePackageReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): CoursePackagePage!
+  courseOwnershipReadMany(filter: Filter, sort: Sort): [CourseOwnership!]!
+  bannerReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): BannerPage!
+  userLessonRelReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): UserLessonRelPage!
+  regularBoardReadOne(filter: Filter, nullable: Boolean): RegularBoard
+  specialProductReadMany(filter: Filter, sort: Sort): [SpecialProduct!]!
+  freeBoardReadOne(filter: Filter, nullable: Boolean): FreeBoard
+  faqCategoryReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): FaqCategoryPage!
+  userGroupReadMany(filter: Filter, sort: Sort): [UserGroup!]!
+  coachScheduleReadOne(filter: Filter, nullable: Boolean): CoachSchedule
+  ticketReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): TicketPage!
+  ticketReadMany(filter: Filter, sort: Sort): [Ticket!]!
+  specialProductPurchaseReadMany(
+    filter: Filter
+    sort: Sort
+  ): [SpecialProductPurchase!]!
+  announcementReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): AnnouncementPage!
+  togetherFreeVideoReadOne(filter: Filter, nullable: Boolean): TogetherFreeVideo
+  regularBoardCategoryReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): RegularBoardCategoryPage!
+  regularBoardReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): RegularBoardPage!
+  courseTagReadMany(filter: Filter, sort: Sort): [CourseTag!]!
+  bannerReadOne(filter: Filter, nullable: Boolean): Banner
+  adminScheduleReadMany(filter: Filter, sort: Sort): [AdminSchedule!]!
+  reviewBoardCommentReadMany(filter: Filter, sort: Sort): [ReviewBoardComment!]!
+  freeBoardReadMany(filter: Filter, sort: Sort): [FreeBoard!]!
+  userTogetherFreeVideoRelReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): UserTogetherFreeVideoRel
+  lessonReadOne(filter: Filter, nullable: Boolean): Lesson
+  freeBoardPostReadMany(filter: Filter, sort: Sort): [FreeBoardPost!]!
+  freeBoardReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): FreeBoardPage!
+  reviewBoardCategoryReadMany(
+    filter: Filter
+    sort: Sort
+  ): [ReviewBoardCategory!]!
+  courseCategoryReadOne(filter: Filter, nullable: Boolean): CourseCategory
+  inquiryKindReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): InquiryKindPage!
+  userBadgeRelReadMany(filter: Filter, sort: Sort): [UserBadgeRel!]!
+  specialProductReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): SpecialProductPage!
+  inquiryReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): InquiryPage!
+  userLessonRelReadOne(filter: Filter, nullable: Boolean): UserLessonRel
+  assignmentBoardCommentReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): AssignmentBoardComment
+  badgeReadOne(filter: Filter, nullable: Boolean): Badge
+  reviewBoardCommentReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): ReviewBoardCommentPage!
+  reviewBoardCategoryReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): ReviewBoardCategory
+  courseCategoryReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): CourseCategoryPage!
+  specialProductPurchaseLinkReadMany(
+    filter: Filter
+    sort: Sort
+  ): [SpecialProductPurchaseLink!]!
+  popupReadOne(filter: Filter, nullable: Boolean): Popup
+  lectureApplicationReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): LectureApplicationPage!
+  inquiryReadOne(filter: Filter, nullable: Boolean): Inquiry
+  userReadOne(filter: Filter, nullable: Boolean): User
+  reviewBoardPostReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): ReviewBoardPostPage!
+  referrerLinkReadOne(filter: Filter, nullable: Boolean): ReferrerLink
+  courseTagRelReadOne(filter: Filter, nullable: Boolean): CourseTagRel
+  bannerReadMany(filter: Filter, sort: Sort): [Banner!]!
+  specialProductPurchaseReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): SpecialProductPurchasePage!
+  faqCategoryReadMany(filter: Filter, sort: Sort): [FaqCategory!]!
+  assignmentBoardMemberReadMany(
+    filter: Filter
+    sort: Sort
+  ): [AssignmentBoardMember!]!
+  faqCategoryReadOne(filter: Filter, nullable: Boolean): FaqCategory
+  freeBoardPostReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): FreeBoardPostPage!
+  meetingRecordReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): MeetingRecordPage!
+  faqReadPage(filter: Filter, sort: Sort, pageOptions: PageOptions!): FaqPage!
+  lessonReadMany(filter: Filter, sort: Sort): [Lesson!]!
+  userTogetherFreeVideoRelReadMany(
+    filter: Filter
+    sort: Sort
+  ): [UserTogetherFreeVideoRel!]!
+  faqReadOne(filter: Filter, nullable: Boolean): Faq
+  courseTagReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): CourseTagPage!
+  courseOwnershipReadOne(filter: Filter, nullable: Boolean): CourseOwnership
+  togetherFreeVideoReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): TogetherFreeVideoPage!
+  courseTagRelReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): CourseTagRelPage!
+  courseReadMany(filter: Filter, sort: Sort): [Course!]!
+  lessonReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): LessonPage!
+  coursePackageReadOne(filter: Filter, nullable: Boolean): CoursePackage
+  freeBoardCommentReadOne(filter: Filter, nullable: Boolean): FreeBoardComment
+  ticketReadOne(filter: Filter, nullable: Boolean): Ticket
+  coachScheduleReadMany(filter: Filter, sort: Sort): [CoachSchedule!]!
+  courseTagRelReadMany(filter: Filter, sort: Sort): [CourseTagRel!]!
+  lectureReadMany(filter: Filter, sort: Sort): [Lecture!]!
+  togetherFreeVideoOwnershipReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): TogetherFreeVideoOwnershipPage!
+  userReadMany(filter: Filter, sort: Sort): [User!]!
+  courseTagReadOne(filter: Filter, nullable: Boolean): CourseTag
+  inquiryKindReadOne(filter: Filter, nullable: Boolean): InquiryKind
+  meetingRecordReadOne(filter: Filter, nullable: Boolean): MeetingRecord
+  coachScheduleReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): CoachSchedulePage!
+  reviewBoardPostReadMany(filter: Filter, sort: Sort): [ReviewBoardPost!]!
+  faqReadMany(filter: Filter, sort: Sort): [Faq!]!
+  userBadgeRelReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): UserBadgeRelPage!
+  specialProductPurchaseLinkReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): SpecialProductPurchaseLinkPage!
+  assignmentBoardCategoryReadMany(
+    filter: Filter
+    sort: Sort
+  ): [AssignmentBoardCategory!]!
+  assignmentBoardReadOne(filter: Filter, nullable: Boolean): AssignmentBoard
+  courseKindReadOne(filter: Filter, nullable: Boolean): CourseKind
+  reviewBoardReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): ReviewBoardPage!
+  courseReviewReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): CourseReviewPage!
+  togetherFreeVideoReadMany(filter: Filter, sort: Sort): [TogetherFreeVideo!]!
+  courseReviewReadOne(filter: Filter, nullable: Boolean): CourseReview
+  regularBoardPostReadOne(filter: Filter, nullable: Boolean): RegularBoardPost
+  adminScheduleReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): AdminSchedulePage!
+  reviewBoardReadOne(filter: Filter, nullable: Boolean): ReviewBoard
+  courseReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): CoursePage!
+  freeBoardPostReadOne(filter: Filter, nullable: Boolean): FreeBoardPost
+  assignmentBoardCommentReadMany(
+    filter: Filter
+    sort: Sort
+  ): [AssignmentBoardComment!]!
+  referrerLinkReadMany(filter: Filter, sort: Sort): [ReferrerLink!]!
+  userLessonRelReadMany(filter: Filter, sort: Sort): [UserLessonRel!]!
+  lectureApplicationReadOne(
+    filter: Filter
+    nullable: Boolean
+  ): LectureApplication
+  reportReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): ReportPage!
+  regularBoardPostReadMany(filter: Filter, sort: Sort): [RegularBoardPost!]!
+  announcementReadMany(filter: Filter, sort: Sort): [Announcement!]!
+  assignmentBoardCommentReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): AssignmentBoardCommentPage!
+  coursePackageCategoryReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): CoursePackageCategoryPage!
+  referrerLinkReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): ReferrerLinkPage!
+  assignmentBoardReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): AssignmentBoardPage!
+  inquiryReadMany(filter: Filter, sort: Sort): [Inquiry!]!
+  freeVideoReadOne(filter: Filter, nullable: Boolean): FreeVideo
+  adminScheduleKindReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): AdminScheduleKindPage!
+  assignmentBoardMemberReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): AssignmentBoardMemberPage!
+  badgeReadPage(
+    filter: Filter
+    sort: Sort
+    pageOptions: PageOptions!
+  ): BadgePage!
+  togetherFreeVideoOwnershipReadMany(
+    filter: Filter
+    sort: Sort
+  ): [TogetherFreeVideoOwnership!]!
+  badgeReadMany(filter: Filter, sort: Sort): [Badge!]!
+  coursePackageCategoryReadMany(
+    filter: Filter
+    sort: Sort
+  ): [CoursePackageCategory!]!
+}
 type FreeBoard {
   _id: MId!
   createdAt: Date!
@@ -1165,9 +1666,11 @@ type Lecture {
   name: String!
   createdAt: Date!
   brief: String!
+  image: File!
   priceSales: Int!
   period: Period!
   applicationEndsAt: Date!
+  location: String!
   priceRegular: Int!
 }
 type CourseTagEdge {
@@ -1312,12 +1815,12 @@ type UserBadgeRelEdge {
 }
 type ReviewBoardComment {
   _id: MId!
-  adminDescription: String!
-  content: String!
-  replyOf: ReviewBoardComment!
   createdAt: Date!
   author: User!
   post: ReviewBoardPost!
+  replyOf: ReviewBoardComment!
+  content: String!
+  adminDescription: String!
 }
 type CoursePackagePage {
   edges: [CoursePackageEdge!]!
@@ -1326,6 +1829,7 @@ type CoursePackagePage {
 type RegularBoardPost {
   _id: MId!
   createdAt: Date!
+  board: RegularBoard!
   name: String!
   content: String!
   isImportant: Boolean!
