@@ -389,12 +389,7 @@ type Mutation {
   inquiryKindCreate(name: String!, adminDescription: String!): InquiryKind!
   badgeMoveUp(_id: MId!): String
   courseReviewUpdateBySelf(_id: MId!, content: String): CourseReview!
-  courseTagUpdate(
-    _id: MId!
-    kind: String
-    name: String
-    adminDescription: String
-  ): CourseTag!
+  courseTagUpdate(_id: MId!, name: String, adminDescription: String): CourseTag!
   bannerCreate(
     name: String!
     imagePc: File!
