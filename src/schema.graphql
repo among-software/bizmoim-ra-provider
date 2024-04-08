@@ -116,13 +116,14 @@ type ReferrerLinkEdge {
 }
 type Lesson {
   _id: MId!
-  createdAt: Date!
-  course: Course!
-  name: String!
-  content: KollusVideo!
-  assignment: String
   assignmentBoard: AssignmentBoard
   adminDescription: String!
+  content: KollusVideo!
+  name: String!
+  createdAt: Date!
+  course: Course!
+  assignment: String
+  isHidden: Boolean!
 }
 type AssignmentBoardPage {
   edges: [AssignmentBoardEdge!]!
@@ -163,7 +164,7 @@ type FreeBoardComment {
   createdAt: Date!
   author: User!
   post: FreeBoardPost!
-  replyOf: FreeBoardComment!
+  replyOf: FreeBoardComment
   content: String!
   adminDescription: String!
 }
@@ -196,6 +197,14 @@ type Mutation {
     content: File!
     adminDescription: String!
   ): FreeVideo!
+  regularBoardUpdate(
+    _id: MId!
+    category: MId
+    name: String
+    content: String
+    adminDescription: String
+    requiredBadges: [MId!]
+  ): RegularBoard!
   coachScheduleUpdate(
     _id: MId!
     kind: MId
@@ -207,17 +216,29 @@ type Mutation {
   courseUpdate(
     description: String
     category: MId
+    tags: [MId!]
     _id: MId!
     adminDescription: String
+    name: String
     attachments: [File!]
     orientation: File
-    title: String
     brief: String
     image: File
+    isHidden: Boolean
     priceSales: Int
     priceRegular: Int
   ): Course!
   meetingRecordDelete(_id: MId!): MeetingRecord!
+  reviewBoardCategoryMoveDown(_id: MId!): String
+  assignmentBoardMoveDown(_id: MId!, category: MId!): String
+  assignmentBoardUpdate(
+    _id: MId!
+    category: MId
+    name: String
+    content: String
+    adminDescription: String
+    lesson: MId
+  ): AssignmentBoard!
   badgeDelete(_id: MId!): Badge!
   lessonCreate(
     course: MId!
@@ -225,6 +246,7 @@ type Mutation {
     content: String!
     assignment: String
     adminDescription: String!
+    isHidden: Boolean
   ): Lesson!
   coursePackageCategoryMoveDown(_id: MId!): String
   lectureUpdate(
@@ -232,7 +254,7 @@ type Mutation {
     _id: MId!
     adminDescription: String
     capacity: Int
-    title: String
+    name: String
     brief: String
     image: File
     priceSales: Int
@@ -241,18 +263,68 @@ type Mutation {
     location: String
     priceRegular: Int
   ): Lecture!
+  regularBoardPostUpdate(
+    _id: MId!
+    board: MId
+    author: MId
+    name: String
+    content: String
+    isImportant: Boolean
+    adminDescription: String
+  ): RegularBoardPost!
   courseReviewUpdateByAdmin(
     _id: MId!
     content: String
     adminChecked: Boolean
     adminDescription: String
   ): CourseReview!
+  assignmentBoardPostCreate(
+    board: MId!
+    author: MId!
+    name: String!
+    content: String!
+    isImportant: Boolean!
+    adminDescription: String!
+  ): AssignmentBoardPost!
   announcementDelete(_id: MId!): Announcement!
   inquiryKindDelete(_id: MId!): InquiryKind!
   userGroupCreate(name: String!, adminDescription: String!): UserGroup!
+  reviewBoardUpdate(
+    _id: MId!
+    category: MId
+    name: String
+    content: String
+    adminDescription: String
+    requiredBadges: [MId!]
+  ): ReviewBoard!
   badgeMoveDown(_id: MId!): String
+  reportDelete(_id: MId!): Report!
   ticketCreate(user: MId!, condition: TicketConditionInput!): Ticket!
   allocateCoach(user: MId!, coach: MId!): String
+  freeBoardCreate(
+    category: MId!
+    name: String!
+    content: String!
+    adminDescription: String!
+    requiredBadges: [MId!]!
+  ): FreeBoard!
+  specialProductPurchaseLinkDelete(
+    specialProduct: MId!
+    specialProductPurchase: MId!
+    ticketCondition: TicketConditionInput!
+    ticket: MId
+    adminDescription: String!
+  ): SpecialProductPurchaseLink!
+  assignmentBoardMemberDelete(_id: MId!): AssignmentBoardMember!
+  specialProductUpdate(
+    name: String!
+    priceSales: Int!
+    adminDescription: String!
+  ): SpecialProduct!
+  reviewBoardCategoryCreate(
+    name: String!
+    adminDescription: String!
+  ): ReviewBoardCategory!
   coachScheduleCreate(
     kind: MId!
     owner: MId!
@@ -266,8 +338,19 @@ type Mutation {
     name: String
     adminDescription: String
   ): CoursePackageCategory!
+  freeBoardPostDelete(_id: MId!): FreeBoardPost!
+  regularBoardCreate(
+    category: MId!
+    name: String!
+    content: String!
+    adminDescription: String!
+    requiredBadges: [MId!]!
+  ): RegularBoard!
+  regularBoardMoveUp(_id: MId!, category: MId!): String
+  assignmentBoardDelete(_id: MId!): AssignmentBoard!
   deallocateCoach(user: MId!): String
   smsVerifVerify(phone: String!, verifCode: String!): PhoneToken!
+  assignmentBoardCategoryDelete(_id: MId!): AssignmentBoardCategory!
   bannerMoveUp(_id: MId!): String
   courseTagCreate(
     kind: String!
@@ -282,6 +365,31 @@ type Mutation {
     email: String
     password: String
   ): User!
+  userCreate2(
+    adminDescription: String!
+    email: String!
+    referrerCode: String!
+    typeOfBusiness: String!
+    group: MId
+    phone: String!
+    coachExpiresAt: Date!
+    name: String!
+    nickname: String!
+    coach: MId
+    studentId: String!
+    loginDenied: Boolean!
+    togetherFreeVideoTicketCount: Int!
+    isCoach: Boolean!
+    coachChecked: Boolean!
+  ): User!
+  reviewBoardCommentDelete(_id: MId!): ReviewBoardComment!
+  reviewBoardCommentCreate(
+    author: MId!
+    post: MId!
+    replyOf: MId
+    content: String!
+    adminDescription: String!
+  ): ReviewBoardComment!
   coursePackageCategoryDelete(_id: MId!): CoursePackageCategory!
   announcementCreate(
     name: String!
@@ -319,6 +427,8 @@ type Mutation {
   bannerMoveDown(_id: MId!): String
   inquiryDelete(_id: MId!): Inquiry!
   userBadgeRelCreate(user: MId!, badge: MId!): UserBadgeRel!
+  assignmentBoardMemberCreate(user: MId!, board: MId!): AssignmentBoardMember!
+  reviewBoardMoveDown(_id: MId!, category: MId!): String
   userUpdateByAdmin(
     adminDescription: String
     handledByCoach: Boolean
@@ -342,7 +452,26 @@ type Mutation {
     user: MId!
     ticket: MId!
   ): CourseOwnership!
+  specialProductCreate(
+    name: String!
+    priceSales: Int!
+    adminDescription: String!
+  ): SpecialProduct!
   courseCategoryDelete(_id: MId!): CourseCategory!
+  specialProductPurchaseCreate(
+    customer: MId!
+    amountTotal: Int!
+    amountPaid: Int!
+    adminDescription: String!
+  ): SpecialProductPurchase!
+  freeBoardCommentUpdate(
+    _id: MId!
+    author: MId
+    post: MId
+    replyOf: MId
+    content: String
+    adminDescription: String
+  ): FreeBoardComment!
   adminScheduleCreate(
     kind: MId!
     period: Period!
@@ -350,6 +479,15 @@ type Mutation {
     adminDescription: String!
   ): AdminSchedule!
   lessonMoveDown(_id: MId!): String
+  assignmentBoardCategoryCreate(
+    name: String!
+    adminDescription: String!
+  ): AssignmentBoardCategory!
+  regularBoardCategoryUpdate(
+    _id: MId!
+    name: String
+    adminDescription: String
+  ): RegularBoardCategory!
   popupUpdate(
     _id: MId!
     name: String
@@ -359,6 +497,13 @@ type Mutation {
     adminDescription: String
   ): Popup!
   smsVerifSend(phone: String!): String
+  freeBoardCommentCreate(
+    author: MId!
+    post: MId!
+    replyOf: MId
+    content: String!
+    adminDescription: String!
+  ): FreeBoardComment!
   lectureApplicationCreate(
     lecture: MId!
     user: MId
@@ -367,12 +512,18 @@ type Mutation {
   ): LectureApplication!
   userBadgeRelDeleteByUserAndBadge(user: MId!, badge: MId!): UserBadgeRel!
   courseOwnershipUpdate(_id: MId!, expiresAt: Date): CourseOwnership!
+  specialProductDelete(
+    name: String!
+    priceSales: Int!
+    adminDescription: String!
+  ): SpecialProduct!
   lessonUpdate(
     _id: MId!
-    title: String
+    name: String
     content: String
     assignment: String
     adminDescription: String
+    isHidden: Boolean
   ): Lesson!
   inquiryUpdate(
     _id: MId!
@@ -381,6 +532,12 @@ type Mutation {
   ): Inquiry!
   bannerDelete(_id: MId!): Banner!
   courseTagMoveUp(_id: MId!): String
+  specialProductPurchaseDelete(
+    customer: MId!
+    amountTotal: Int!
+    amountPaid: Int!
+    adminDescription: String!
+  ): SpecialProductPurchase!
   courseReviewCreate(
     course: MId!
     author: MId!
@@ -389,6 +546,7 @@ type Mutation {
   inquiryKindCreate(name: String!, adminDescription: String!): InquiryKind!
   badgeMoveUp(_id: MId!): String
   courseReviewUpdateBySelf(_id: MId!, content: String): CourseReview!
+  regularBoardPostDelete(_id: MId!): RegularBoardPost!
   courseTagUpdate(_id: MId!, name: String, adminDescription: String): CourseTag!
   bannerCreate(
     name: String!
@@ -403,7 +561,36 @@ type Mutation {
     url: String!
     adminDescription: String!
   ): ReferrerLink!
+  reportCreate(
+    author: MId!
+    content: String!
+    targetKind: ReportTargetKind!
+    target: MId!
+  ): Report!
   popupMoveUp(_id: MId!): String
+  regularBoardCategoryCreate(
+    name: String!
+    adminDescription: String!
+  ): RegularBoardCategory!
+  reviewBoardCommentUpdate(
+    _id: MId!
+    author: MId
+    post: MId
+    replyOf: MId
+    content: String
+    adminDescription: String
+  ): ReviewBoardComment!
+  reportUpdate(
+    _id: MId!
+    adminDescription: String
+    adminChecked: Boolean
+  ): Report!
+  specialProductPurchaseUpdate(
+    customer: MId!
+    amountTotal: Int!
+    amountPaid: Int!
+    adminDescription: String!
+  ): SpecialProductPurchase!
   announcementUpdate(
     _id: MId!
     name: String
@@ -411,9 +598,27 @@ type Mutation {
     adminDescription: String
   ): Announcement!
   sendSmsCoach(targets: [MId!]!): String
+  reviewBoardCategoryUpdate(
+    _id: MId!
+    name: String
+    adminDescription: String
+  ): ReviewBoardCategory!
   lectureDelete(_id: MId!): Lecture!
+  reviewBoardDelete(_id: MId!): ReviewBoard!
+  freeBoardPostUpdate(
+    _id: MId!
+    board: MId
+    author: MId
+    name: String
+    content: String
+    isImportant: Boolean
+    adminDescription: String
+  ): FreeBoardPost!
+  reviewBoardMoveUp(_id: MId!, category: MId!): String
   lessonDelete(_id: MId!): Lesson!
   lessonMoveUp(_id: MId!): String
+  freeBoardMoveDown(_id: MId!, category: MId!): String
+  assignmentBoardMoveUp(_id: MId!, category: MId!): String
   userLessonRelUpdate(
     user: MId!
     lesson: MId!
@@ -421,6 +626,7 @@ type Mutation {
     progress: Float
   ): UserLessonRel!
   coursePackageDelete(_id: MId!): CoursePackage!
+  freeBoardCategoryMoveDown(_id: MId!): String
   bannerUpdate(
     _id: MId!
     name: String
@@ -429,7 +635,10 @@ type Mutation {
     url: String
     adminDescription: String
   ): Banner!
+  reviewBoardCategoryMoveUp(_id: MId!): String
+  freeBoardCategoryMoveUp(_id: MId!): String
   courseReviewDeleteByAdmin(_id: MId!): CourseReview!
+  reviewBoardCategoryDelete(_id: MId!): ReviewBoardCategory!
   courseTagRelCreate(course: MId!, tag: MId!): CourseTagRel!
   inquiryCreate(
     author: MId
@@ -447,7 +656,30 @@ type Mutation {
     name: String!
     adminDescription: String!
   ): CourseCategory!
+  reviewBoardCreate(
+    category: MId!
+    name: String!
+    content: String!
+    adminDescription: String!
+    requiredBadges: [MId!]!
+  ): ReviewBoard!
+  reviewBoardPostCreate(
+    board: MId!
+    author: MId!
+    name: String!
+    content: String!
+    isImportant: Boolean!
+    adminDescription: String!
+  ): ReviewBoardPost!
+  assignmentBoardCategoryMoveUp(_id: MId!): String
   courseCategoryMoveUp(_id: MId!): String
+  specialProductPurchaseLinkUpdate(
+    specialProduct: MId!
+    specialProductPurchase: MId!
+    ticketCondition: TicketConditionInput!
+    ticket: MId
+    adminDescription: String!
+  ): SpecialProductPurchaseLink!
   sendSmsAdmin(targets: [MId!]!): String
   userVerifyToken(token: String!): UserAuth!
   lectureApplicationUpdate(
@@ -463,18 +695,30 @@ type Mutation {
     content: String
     adminDescription: String
   ): MeetingRecord!
+  regularBoardCategoryMoveUp(_id: MId!): String
+  freeBoardCategoryCreate(
+    name: String!
+    adminDescription: String!
+  ): FreeBoardCategory!
+  assignmentBoardCategoryMoveDown(_id: MId!): String
+  regularBoardCommentDelete(_id: MId!): RegularBoardComment!
   courseCreate(
     description: String!
     category: MId!
+    tags: [MId!]
     adminDescription: String!
     name: String!
     attachments: [File!]!
     orientation: File
     brief: String!
     image: File!
+    isHidden: Boolean
     priceSales: Int!
     priceRegular: Int!
   ): Course!
+  freeBoardCategoryDelete(_id: MId!): FreeBoardCategory!
+  regularBoardCategoryMoveDown(_id: MId!): String
+  assignmentBoardPostDelete(_id: MId!): AssignmentBoardPost!
   popupDelete(_id: MId!): Popup!
   userCreate(
     adminDescription: String!
@@ -490,8 +734,20 @@ type Mutation {
     togetherFreeVideoTicketCount: Int!
     isCoach: Boolean!
   ): User!
+  freeBoardCategoryUpdate(
+    _id: MId!
+    name: String
+    adminDescription: String
+  ): FreeBoardCategory!
   courseTagRelDelete(_id: MId!): CourseTagRel!
   courseTagDelete(_id: MId!): CourseTag!
+  regularBoardCommentCreate(
+    author: MId!
+    post: MId!
+    replyOf: MId
+    content: String!
+    adminDescription: String!
+  ): RegularBoardComment!
   meetingRecordCreate(
     author: MId!
     customer: MId
@@ -499,6 +755,11 @@ type Mutation {
     content: String!
     adminDescription: String!
   ): MeetingRecord!
+  reviewBoardPostDelete(_id: MId!): ReviewBoardPost!
+  specialProductPurchaseLinkPay(
+    link: MId!
+    ticket: MId!
+  ): SpecialProductPurchaseLink!
   coachScheduleDelete(_id: MId!): CoachSchedule!
   coursePackageCreate(
     description: String!
@@ -511,6 +772,30 @@ type Mutation {
     priceSales: Int!
     priceRegular: Int!
   ): CoursePackage!
+  assignmentBoardPostUpdate(
+    _id: MId!
+    board: MId
+    author: MId
+    name: String
+    content: String
+    isImportant: Boolean
+    adminDescription: String
+  ): AssignmentBoardPost!
+  assignmentBoardCommentCreate(
+    author: MId!
+    post: MId!
+    replyOf: MId
+    content: String!
+    adminDescription: String!
+  ): AssignmentBoardComment!
+  assignmentBoardCreate(
+    category: MId!
+    name: String!
+    content: String!
+    adminDescription: String!
+    lesson: MId
+  ): AssignmentBoard!
+  regularBoardMoveDown(_id: MId!, category: MId!): String
   userGroupUpdate(_id: MId!, name: String, adminDescription: String): UserGroup!
   courseDelete(_id: MId!): Course!
   togetherFreeVideoCreate(
@@ -531,9 +816,34 @@ type Mutation {
     location: String!
     priceRegular: Int!
   ): Lecture!
+  regularBoardDelete(_id: MId!): RegularBoard!
   userGroupDelete(_id: MId!): UserGroup!
+  assignmentBoardCommentUpdate(
+    _id: MId!
+    author: MId
+    post: MId
+    replyOf: MId
+    content: String
+    adminDescription: String
+  ): AssignmentBoardComment!
+  specialProductPurchaseLinkCreate(
+    specialProduct: MId!
+    specialProductPurchase: MId!
+    ticketCondition: TicketConditionInput!
+    ticket: MId
+    adminDescription: String!
+  ): SpecialProductPurchaseLink!
   lectureApplicationDelete(_id: MId!): LectureApplication!
   adminScheduleDelete(_id: MId!): AdminSchedule!
+  reviewBoardPostUpdate(
+    _id: MId!
+    board: MId
+    author: MId
+    name: String
+    content: String
+    isImportant: Boolean
+    adminDescription: String
+  ): ReviewBoardPost!
   togetherFreeVideoUpdate(
     _id: MId!
     name: String
@@ -541,6 +851,11 @@ type Mutation {
     adminDescription: String
   ): TogetherFreeVideo!
   courseReviewDeleteBySelf(_id: MId!): CourseReview!
+  assignmentBoardCategoryUpdate(
+    _id: MId!
+    name: String
+    adminDescription: String
+  ): AssignmentBoardCategory!
   adminScheduleUpdate(
     _id: MId!
     kind: MId
@@ -548,7 +863,17 @@ type Mutation {
     content: String
     adminDescription: String
   ): AdminSchedule!
+  freeBoardMoveUp(_id: MId!, category: MId!): String
   courseCategoryMoveDown(_id: MId!): String
+  regularBoardPostCreate(
+    board: MId!
+    author: MId!
+    name: String!
+    content: String!
+    isImportant: Boolean!
+    adminDescription: String!
+  ): RegularBoardPost!
+  regularBoardCategoryDelete(_id: MId!): RegularBoardCategory!
   adminVerifyToken(token: String!): AdminAuth!
   referrerLinkUpdate(
     _id: MId!
@@ -561,8 +886,8 @@ type Mutation {
     category: MId
     _id: MId!
     adminDescription: String
+    name: String
     courses: [MId!]
-    title: String
     brief: String
     image: File
     priceSales: Int
@@ -580,8 +905,17 @@ type Mutation {
     adminDescription: String
   ): InquiryKind!
   popupMoveDown(_id: MId!): String
+  freeBoardUpdate(
+    _id: MId!
+    category: MId
+    name: String
+    content: String
+    adminDescription: String
+    requiredBadges: [MId!]
+  ): FreeBoard!
   userGetTogetherFreeVideoTicketForFree(user: MId!): String
   userLeave(id: MId!, reason: String!): String
+  assignmentBoardCommentDelete(_id: MId!): AssignmentBoardComment!
   popupCreate(
     name: String!
     imagePc: File!
@@ -589,11 +923,27 @@ type Mutation {
     url: String!
     adminDescription: String!
   ): Popup!
+  freeBoardPostCreate(
+    board: MId!
+    author: MId!
+    name: String!
+    content: String!
+    isImportant: Boolean!
+    adminDescription: String!
+  ): FreeBoardPost!
   courseOwnershipCreate(
     course: MId!
     user: MId!
     expiresAt: Date!
   ): CourseOwnership!
+  regularBoardCommentUpdate(
+    _id: MId!
+    author: MId
+    post: MId
+    replyOf: MId
+    content: String
+    adminDescription: String
+  ): RegularBoardComment!
   courseCategoryUpdate(
     _id: MId!
     name: String
@@ -605,9 +955,11 @@ type Mutation {
     ticket: MId!
   ): LectureApplication!
   freeVideoDelete(_id: MId!): FreeVideo!
+  freeBoardCommentDelete(_id: MId!): FreeBoardComment!
   badgeCreate(name: String!, color: String!): Badge!
   badgeUpdate(_id: MId!, name: String, color: String): Badge!
   togetherFreeVideoDelete(_id: MId!): TogetherFreeVideo!
+  freeBoardDelete(_id: MId!): FreeBoard!
   coursePackagePurchase(package: MId!, user: MId!, ticket: MId!): String
   adminLogin(id: String!, password: String!): AdminAuth!
 }
@@ -623,7 +975,7 @@ type AssignmentBoardComment {
   createdAt: Date!
   author: User!
   post: AssignmentBoardPost!
-  replyOf: AssignmentBoardComment!
+  replyOf: AssignmentBoardComment
   content: String!
   adminDescription: String!
 }
@@ -689,6 +1041,7 @@ type Report {
   target: ReportTarget!
   content: String!
   adminDescription: String!
+  adminChecked: Boolean!
 }
 type FreeBoardEdge {
   node: FreeBoard!
@@ -908,6 +1261,7 @@ type ReviewBoardPost {
   _id: MId!
   createdAt: Date!
   board: ReviewBoard!
+  author: User!
   name: String!
   content: String!
   isImportant: Boolean!
@@ -1004,6 +1358,7 @@ type FreeBoardPost {
   _id: MId!
   createdAt: Date!
   board: FreeBoard!
+  author: User!
   name: String!
   content: String!
   isImportant: Boolean!
@@ -1033,6 +1388,7 @@ type AssignmentBoardPost {
   _id: MId!
   createdAt: Date!
   board: AssignmentBoard!
+  author: User!
   name: String!
   content: String!
   isImportant: Boolean!
@@ -1079,6 +1435,7 @@ type Course {
   createdAt: Date!
   brief: String!
   image: File!
+  isHidden: Boolean!
   priceSales: Int!
   lessons: [Lesson!]!
   priceRegular: Int!
@@ -1098,7 +1455,7 @@ type RegularBoardComment {
   createdAt: Date!
   author: User!
   post: RegularBoardPost!
-  replyOf: RegularBoardComment!
+  replyOf: RegularBoardComment
   content: String!
   adminDescription: String!
 }
@@ -1648,6 +2005,7 @@ type AssignmentBoard {
   name: String!
   content: String!
   adminDescription: String!
+  lesson: Lesson
 }
 type UserPage {
   edges: [UserEdge!]!
@@ -1813,7 +2171,7 @@ type ReviewBoardComment {
   createdAt: Date!
   author: User!
   post: ReviewBoardPost!
-  replyOf: ReviewBoardComment!
+  replyOf: ReviewBoardComment
   content: String!
   adminDescription: String!
 }
@@ -1825,6 +2183,7 @@ type RegularBoardPost {
   _id: MId!
   createdAt: Date!
   board: RegularBoard!
+  author: User!
   name: String!
   content: String!
   isImportant: Boolean!
