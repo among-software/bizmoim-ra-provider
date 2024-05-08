@@ -41,6 +41,7 @@ const getSort = (params) => {
 };
 
 const filterFormatter = (key, value) => {
+  console.log(key);
   if (key === 'createdAt') {
     return new Date(value).toISOString();
   }
@@ -61,10 +62,11 @@ const createDataProvider = async ({ apolloClient }) => {
         const keyList = key.split('__filter__');
         if (keyList.length === 2) {
           const filterKey = keyList[1];
-          submitAbleFilter[keyList[0]] = { [filterKey]: filterFormatter(keyList[0], value) };
+          const formatingValue = filterFormatter(keyList[0], value);
+          submitAbleFilter[keyList[0]] = { [filterKey]: formatingValue };
           return;
         }
-        submitAbleFilter[key] = value;
+        submitAbleFilter[key] = formatingValue;
       });
       console.log('ra-provider filter', submitAbleFilter);
 
