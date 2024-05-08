@@ -1,7 +1,7 @@
 {
   "name": "bizmoim-ra-provider",
   "private": true,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/main.js",
   "module": "dist/main.js",
   "scripts": {

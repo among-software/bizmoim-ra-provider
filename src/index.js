@@ -59,6 +59,7 @@ const createDataProvider = async ({ apolloClient }) => {
         }
         submitAbleFilter[key] = value;
       });
+      console.log('ra-provider filter', submitAbleFilter);
 
       const result = await loader.readPage(resource, {
         filter: submitAbleFilter,
