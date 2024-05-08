@@ -60,9 +60,9 @@ const createDataProvider = async ({ apolloClient }) => {
       // gte, lte등 필터 data-provider에서 처리해줘야함, __filter__로 구분하기로함
       Object.entries(filter).forEach(([key, value]) => {
         const keyList = key.split('__filter__');
+        const formatingValue = filterFormatter(keyList[0], value);
         if (keyList.length === 2) {
           const filterKey = keyList[1];
-          const formatingValue = filterFormatter(keyList[0], value);
           submitAbleFilter[keyList[0]] = { [filterKey]: formatingValue };
           return;
         }
