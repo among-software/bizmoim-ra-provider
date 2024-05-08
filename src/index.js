@@ -1,9 +1,9 @@
 // const { createLoader } = require("./loader");
-import { createLoader } from "./loader";
+import { createLoader } from './loader';
 
 class NotImplementedError extends Error {
   constructor() {
-    super("This function is not implemented.");
+    super('This function is not implemented.');
   }
 }
 
@@ -13,12 +13,12 @@ const fnNotImplemented = () => {
 
 const toMongoDirec = (a) => {
   switch (a) {
-    case "ASC":
+    case 'ASC':
       return 1;
-    case "DESC":
+    case 'DESC':
       return -1;
     default:
-      throw new Error("Sort invalid, the following value is given:" + a);
+      throw new Error('Sort invalid, the following value is given:' + a);
   }
 };
 
@@ -48,9 +48,20 @@ const createDataProvider = async ({ apolloClient }) => {
       const pageOptions = getPageOptions(params);
       const sort = getSort(params);
       const filter = params.filter;
+      const submitAbleFilter = {};
+      // gte, lte등 필터 data-provider에서 처리해줘야함, __filter__로 구분하기로함
+      Object.entries(filter).forEach(([key, value]) => {
+        const keyList = key.split('__filter__');
+        if (keyList.length === 2) {
+          const filterKey = keyList[1];
+          submitAbleFilter[keyList[0]] = { [filterKey]: value };
+          return;
+        }
+        submitAbleFilter[key] = value;
+      });
 
       const result = await loader.readPage(resource, {
-        filter,
+        filter: submitAbleFilter,
         sort,
         pageOptions,
       });
@@ -98,7 +109,7 @@ const createDataProvider = async ({ apolloClient }) => {
   return dataProvider;
 };
 
-export * from "./fragments";
+export * from './fragments';
 export { createDataProvider };
 // module.exports.createDataProvider = createDataProvider;
 // module.exports.fragments = require("./fragments").fragments;
