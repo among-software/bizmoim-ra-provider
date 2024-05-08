@@ -40,6 +40,13 @@ const getSort = (params) => {
   return sort;
 };
 
+const filterFormatter = (key, value) => {
+  if (key === 'createdAt') {
+    return new Date(value).toISOString();
+  }
+  return value;
+};
+
 const createDataProvider = async ({ apolloClient }) => {
   const loader = await createLoader({ apolloClient });
 
@@ -54,7 +61,7 @@ const createDataProvider = async ({ apolloClient }) => {
         const keyList = key.split('__filter__');
         if (keyList.length === 2) {
           const filterKey = keyList[1];
-          submitAbleFilter[keyList[0]] = { [filterKey]: value };
+          submitAbleFilter[keyList[0]] = { [filterKey]: filterFormatter(keyList[0], value) };
           return;
         }
         submitAbleFilter[key] = value;
