@@ -63,6 +63,13 @@ const createDataProvider = async ({ apolloClient }) => {
         const formatingValue = filterFormatter(keyList[0], value);
         if (keyList.length === 2) {
           const filterKey = keyList[1];
+          if (submitAbleFilter[keyList[0]] != null) {
+            submitAbleFilter[keyList[0]] = {
+              ...submitAbleFilter[keyList[0]],
+              [filterKey]: formatingValue,
+            };
+            return;
+          }
           submitAbleFilter[keyList[0]] = { [filterKey]: formatingValue };
           return;
         }
