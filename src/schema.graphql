@@ -2056,6 +2056,7 @@ type SpecialProduct {
   createdAt: Date!
   name: String!
   priceSales: Int!
+  isHidden: Boolean!
   adminDescription: String!
 }
 type LessonEdge {

@@ -112,6 +112,7 @@ fragment f_SpecialProduct on SpecialProduct {
   _id
   createdAt
   name
+  isHidden
   priceSales
   adminDescription
 }
