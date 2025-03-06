@@ -654,9 +654,9 @@ fragment f_Course on Course {
   category {
     _id
   }
-  tags {
-    _id
-  }
+  # tags {
+  #   _id
+  # }
   _id
   adminDescription
   name
@@ -667,9 +667,9 @@ fragment f_Course on Course {
   image
   isHidden
   priceSales
-  lessons {
-    _id
-  }
+  # lessons {
+  #   _id
+  # }
   priceRegular
 }
 fragment f_RegularBoardComment on RegularBoardComment {
