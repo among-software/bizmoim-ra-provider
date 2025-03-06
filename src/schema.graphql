@@ -1437,7 +1437,7 @@ type Course {
   image: File!
   isHidden: Boolean!
   priceSales: Int!
-  lessons: [Lesson!]!
+  # lessons: [Lesson!]!
   priceRegular: Int!
 }
 type AssignmentBoardCategory {
